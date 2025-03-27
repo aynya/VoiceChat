@@ -1,58 +1,18 @@
 // TODO: 需要与后端API集成
 // 目前使用模拟数据，后续需要替换为实际的API调用
 
+import axios from 'axios';
+
+const baseUrl = 'http://localhost:3001'
+
 export const messageService = {
     // 获取频道消息历史
     getChannelMessages: async (channelId) => {
-        // TODO: 替换为实际的API调用
-        // 示例：const response = await fetch(`/api/channels/${channelId}/messages`);
-        // return await response.json();
 
-        // 模拟不同频道的消息数据
-        const mockMessages = {
-            'general': [
-                {
-                    id: 1,
-                    type: 'system',
-                    content: '欢迎来到 #综合聊天 频道',
-                    timestamp: new Date().toLocaleTimeString()
-                },
-                {
-                    id: 2,
-                    type: 'user',
-                    username: '用户A',
-                    avatar: 'https://example.com/avatar1.png',
-                    content: '大家好！',
-                    timestamp: new Date().toLocaleTimeString(),
-                }
-            ],
-            'lounge': [
-                {
-                    id: 1,
-                    type: 'system',
-                    content: '欢迎来到 #临时代碼 频道',
-                    timestamp: new Date().toLocaleTimeString()
-                },
-                {
-                    id: 2,
-                    type: 'user',
-                    username: '用户B',
-                    avatar: 'https://example.com/avatar2.png',
-                    content: '这里是代码讨论区',
-                    timestamp: new Date().toLocaleTimeString(),
-                }
-            ],
-            'voice-1': [
-                {
-                    id: 1,
-                    type: 'system',
-                    content: '欢迎来到 #语音频道 1',
-                    timestamp: new Date().toLocaleTimeString()
-                }
-            ]
-        };
-
-        return mockMessages[channelId] || [];
+        const response = await axios.get(`${baseUrl}/rooms`)
+        // 之后用后端优化这个查询
+        const currentRoom = response.data.find(room => room.key === channelId)
+        return currentRoom.messages
     },
 
     // 发送消息
@@ -64,6 +24,7 @@ export const messageService = {
         //     body: JSON.stringify(message)
         // });
         // return await response.json();
+
 
         return {
             id: Date.now(),

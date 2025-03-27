@@ -8,7 +8,9 @@ import './friend.css';
 
 
 // 好友列表组件
-const PersonsPanel = () => (
+const PersonsPanel = ({currentRoom}) => {
+    const onlineUsers = currentRoom?.users || [];
+    return (
     <Sider
         width={240}
         style={{
@@ -17,18 +19,19 @@ const PersonsPanel = () => (
         }}
     >
         <div style={{ padding: '16px' }}>
-            <div ><TeamOutlined /> 在线{-3}</div>
+            <div ><TeamOutlined /> 在线{`-${onlineUsers.length}`}</div>
             <List
-                dataSource={['小明', '小红', '小李']}
+                dataSource={onlineUsers}
                 renderItem={(item) => (
                     <List.Item className="friend-item" >
-                        <Avatar icon={<UserOutlined />} />
-                        <span style={{ marginLeft: 8 }} className="friend-name">{item}</span>
+                        <Avatar icon={<UserOutlined />} src = {item.avatar} />
+                        <span style={{ marginLeft: 8 }} className="friend-name">{item.username}</span>
                     </List.Item>
                 )}
             />
         </div>
     </Sider>
 );
+}
 
 export default PersonsPanel;

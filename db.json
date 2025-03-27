@@ -1,111 +1,122 @@
 {
-    "rooms": [
+  "rooms": [
+    {
+      "key": "1",
+      "label": "1",
+      "type": "text",
+      "users": [
         {
-            "key": "1",
-            "label": "1",
-            "type": "text",
-            "users": [
-                {
-                    "id": 1,
-                    "username": "张三",
-                    "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                },
-                {
-                    "id": 2,
-                    "username": "李四",
-                    "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                },
-                {
-                    "id": 3,
-                    "username": "王五",
-                    "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                }
-            ],
-            "messages": [
-                {
-                    "id": 1,
-                    "type": "system",
-                    "content": "欢迎来到聊天室",
-                    "timestamp": "2023-07-01 12:00:00"
-                },
-                {
-                    "id": 2,
-                    "type": "user",
-                    "username": "用户A",
-                    "avatar": "https://example.com/avatar1.png",
-                    "content": "大家好",
-                    "timestamp": "2023-07-01 12:01:00"
-                },
-                {
-                    "id": 3,
-                    "type": "user",
-                    "username": "用户B",
-                    "avatar": "https://example.com/avatar2.png",
-                    "content": "我是用户B",
-                    "timestamp": "2023-07-01 12:02:00"
-                }
-            ]
+          "id": 1,
+          "username": "张三",
+          "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
         },
         {
-            "key": "2",
-            "label": "2",
-            "type": "text",
-            "users": [
-                {
-                    "id": 4,
-                    "username": "赵六",
-                    "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                },
-                {
-                    "id": 5,
-                    "username": "钱七",
-                    "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                }
-            ],
-            "messages": [
-                {
-                    "id": 4,
-                    "type": "system",
-                    "content": "欢迎来到聊天室2",
-                    "timestamp": "2023-07-02 12:00:00"
-                },
-                {
-                    "id": 5,
-                    "type": "user",
-                    "username": "用户C",
-                    "avatar": "https://example.com/avatar3.png",
-                    "content": "这是另一个聊天室",
-                    "timestamp": "2023-07-02 12:01:00"
-                }
-            ]
+          "id": 2,
+          "username": "李四",
+          "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
         },
         {
-            "key": "3",
-            "label": "3",
-            "type": "voice",
-            "users": [
-                {
-                    "id": 6,
-                    "username": "孙八",
-                    "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                }
-            ],
-            "messages": [
-                {
-                    "id": 6,
-                    "type": "system",
-                    "content": "欢迎来到聊天室3",
-                    "timestamp": "2023-07-03 12:00:00"
-                },
-                {
-                    "id": 7,
-                    "type": "user",
-                    "username": "用户D",
-                    "avatar": "https://example.com/avatar4.png",
-                    "content": "这是第三个聊天室",
-                    "timestamp": "2023-07-03 12:01:00"
-                }
-            ]
+          "id": 3,
+          "username": "王五",
+          "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
         }
-    ]
+      ],
+      "messages": [
+        {
+          "id": 1,
+          "type": "system",
+          "content": "欢迎来到聊天室",
+          "timestamp": "2023-07-01 12:00:00"
+        },
+        {
+          "id": 2,
+          "type": "user",
+          "username": "用户A",
+          "avatar": "https://example.com/avatar1.png",
+          "content": "大家好",
+          "timestamp": "2023-07-01 12:01:00"
+        },
+        {
+          "id": 3,
+          "type": "user",
+          "username": "用户B",
+          "avatar": "https://example.com/avatar2.png",
+          "content": "我是用户B",
+          "timestamp": "2023-07-01 12:02:00"
+        }
+      ],
+      "id": "d25b"
+    },
+    {
+      "key": "2",
+      "label": "2",
+      "type": "text",
+      "users": [
+        {
+          "id": 4,
+          "username": "赵六",
+          "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+        },
+        {
+          "id": 5,
+          "username": "钱七",
+          "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+        }
+      ],
+      "messages": [
+        {
+          "id": 4,
+          "type": "system",
+          "content": "欢迎来到聊天室2",
+          "timestamp": "2023-07-02 12:00:00"
+        },
+        {
+          "id": 5,
+          "type": "user",
+          "username": "用户C",
+          "avatar": "https://example.com/avatar3.png",
+          "content": "这是另一个聊天室",
+          "timestamp": "2023-07-02 12:01:00"
+        }
+      ],
+      "id": "cdd8"
+    },
+    {
+      "key": "3",
+      "label": "3",
+      "type": "voice",
+      "users": [
+        {
+          "id": 6,
+          "username": "孙八",
+          "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+        }
+      ],
+      "messages": [
+        {
+          "id": 6,
+          "type": "system",
+          "content": "欢迎来到聊天室3",
+          "timestamp": "2023-07-03 12:00:00"
+        },
+        {
+          "id": 7,
+          "type": "user",
+          "username": "用户D",
+          "avatar": "https://example.com/avatar4.png",
+          "content": "这是第三个聊天室",
+          "timestamp": "2023-07-03 12:01:00"
+        }
+      ],
+      "id": "1d64"
+    },
+    {
+      "id": "a6d3",
+      "key": "4",
+      "label": "4",
+      "type": "text",
+      "users": [],
+      "messages": []
+    }
+  ]
 }

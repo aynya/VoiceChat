@@ -31,6 +31,7 @@ const ChannelsPanel = () => {
 
     const { messages, loading, error, sendMessage, addMessage, updateMessage, deleteMessage, refreshMessages } = useMessages(currentRoom?.key);
     console.log(currentRoom?.key);
+    console.log(currentRoom?.users);
 
     return (
         <Layout hasSider style={{ height: '100vh' }}>
@@ -81,7 +82,9 @@ const ChannelsPanel = () => {
                 updateMessage={updateMessage} 
                 deleteMessage={deleteMessage} 
                 refreshMessages={refreshMessages} 
-                isInRoom={isInRoom} />
+                isInRoom={isInRoom}
+                currentRoom={currentRoom}
+ />
         </Layout>
 
     );

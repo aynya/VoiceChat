@@ -56,7 +56,7 @@ const ChannelFooter = ({
                         textOverflow: 'ellipsis'
                     }}>
                         <CheckCircleOutlined style={{ color: '#52c41a', marginRight: 4 }} />
-                        当前房间：{currentRoom?.name}
+                        当前房间：{currentRoom?.label}
                     </div>
                 </Tooltip>
             )}
@@ -84,7 +84,7 @@ const ChannelFooter = ({
                                 shape="circle"
                                 icon={<CloseOutlined />}
                                 size="large"
-                                onClick={onExit}
+                                onClick={() => {setIsSpeaking(false); onExit(); }}
                             />
                             <Button
                                 type={isSpeaking ? "primary" : "default"}

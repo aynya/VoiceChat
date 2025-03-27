@@ -57,8 +57,9 @@ export const useChannels = () => {
             } else {
                 setVoiceChannels(prev => [...prev, newChannel]);
             }
-            setCurrentRoom({ key: newChannel.key, name: newChannel.label });
-            setIsInRoom(true);
+            // setCurrentRoom({ key: newChannel.key, name: newChannel.label });
+            // setIsInRoom(true);
+            joinChannel(newChannel.key);
             return newChannel;
         } catch (error) {
             console.error('创建频道失败:', error);
@@ -84,7 +85,8 @@ export const useChannels = () => {
                     c.key === channelId || c.label === channelId
                 );
                 if (channel) {
-                    setCurrentRoom({ key: channel.key, name: channel.label });
+                    console.log(channel.messages)
+                    setCurrentRoom(channel);
                 }
             }
             return success;

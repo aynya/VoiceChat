@@ -11,13 +11,13 @@ const Right = (props) => {
     const [openSearchPanel, setOpenSearchPanel] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState('');
     const messageListRef = useRef(null);
-    const messages = props.messages;
+    const messages = props.currentRoom?.messages || [];
 
     const handleMessageJump = (messageId) => messageListRef.current.handleMessageJump(messageId);
     return (
         <Layout>
             <TextChannel ref={messageListRef} messages={messages} addMessage={props.addMessage} isInRoom={props.isInRoom}></TextChannel>
-            {openUserPanel && <PersonsPanel></PersonsPanel>}
+            {openUserPanel && <PersonsPanel currentRoom={props.currentRoom}></PersonsPanel>}
             <div style={{ position: 'fixed', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 1000 }}>
                 <RightActionBar
                     onUserClick={() => {
