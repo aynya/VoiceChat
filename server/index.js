@@ -267,8 +267,9 @@ const generatUserId = (room) => {
 
 app.post(`/api/rooms`, (request, response) => { // 创建房间
     const body = request.body
+    console.log(body)
 
-    if(!body.content) {
+    if(!body) {
         return response.status(400).json({ // 客户端错误响应
             error: 'content missing'
         })
@@ -280,7 +281,7 @@ app.post(`/api/rooms`, (request, response) => { // 创建房间
         type: body.type,
         users: body.users,
         messages: body.messages,
-        id: generatRoomId()
+        id: body.key
     }
 
     rooms = rooms.concat(room)
