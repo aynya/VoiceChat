@@ -5,10 +5,12 @@ import ChannelList from './ChannelList';
 import CreateChannelModal from './CreateChannelModal';
 import ChannelFooter from './ChannelFooter';
 import { useMessages } from '../../hooks/useMessages';
+import { useAuth } from '../../hooks/useAuth';
 import Right from '../rightMenu/Right';
 const { Sider } = Layout;
 
 const ChannelsPanel = () => {
+    const { user } = useAuth();
     const {
         isCreating,
         currentStep,
@@ -27,9 +29,9 @@ const ChannelsPanel = () => {
         handleSelectType,
         handleExit,
         handleLogout
-    } = useChannels();
+    } = useChannels(user);
 
-    const { messages, loading, error, sendMessage, addMessage, updateMessage, deleteMessage, refreshMessages } = useMessages(currentRoom?.key);
+    const { messages, loading, error, sendMessage, addMessage, updateMessage, deleteMessage, refreshMessages } = useMessages(currentRoom?.key, user);
     console.log(currentRoom?.key);
     console.log(currentRoom?.users);
 

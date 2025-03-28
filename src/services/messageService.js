@@ -3,7 +3,7 @@
 
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:3001'
+const baseUrl = 'http://localhost:3001/api'
 
 export const messageService = {
     // 获取频道消息历史
@@ -16,7 +16,7 @@ export const messageService = {
     },
 
     // 发送消息
-    sendMessage: async (channelId, message) => {
+    sendMessage: async (channelId, message, user) => {
         // TODO: 替换为实际的API调用
         // 示例：const response = await fetch(`/api/channels/${channelId}/messages`, {
         //     method: 'POST',
@@ -24,16 +24,16 @@ export const messageService = {
         //     body: JSON.stringify(message)
         // });
         // return await response.json();
-
-
-        return {
-            id: Date.now(),
+        const newMessage = {
             type: 'user',
-            username: '当前用户',
-            avatar: 'https://example.com/avatar2.png',
+            username: user.username,
+            avatar: user.avatar,
             content: message.content,
             timestamp: new Date().toLocaleTimeString(),
-        };
+        }
+        const response = await axios.post(`${baseUrl}/rooms/${channelId}/messages`, newMessage)
+
+        return response.data
     },
 
     // 订阅频道消息更新

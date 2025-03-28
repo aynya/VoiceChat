@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { message } from 'antd';
 import { messageService } from '../services/messageService';
 
-export const useMessages = (channelId) => {
+export const useMessages = (channelId, user) => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -33,7 +33,7 @@ export const useMessages = (channelId) => {
         if (!channelId) return;
 
         try {
-            const newMessage = await messageService.sendMessage(channelId, { content });
+            const newMessage = await messageService.sendMessage(channelId, { content }, user);
             setMessages(prev => [...prev, newMessage]);
             return newMessage;
         } catch (err) {
@@ -43,32 +43,32 @@ export const useMessages = (channelId) => {
         }
     }, [channelId]);
 
-    // 订阅频道消息更新
-    useEffect(() => {
-        if (!channelId) {
-            setMessages([]);
-            if (unsubscribe) {
-                unsubscribe();
-            }
-            return;
-        }
+    // // 订阅频道消息更新
+    // useEffect(() => {
+    //     if (!channelId) {
+    //         setMessages([]);
+    //         if (unsubscribe) {
+    //             unsubscribe();
+    //         }
+    //         return;
+    //     }
 
-        // 获取历史消息
-        fetchMessages();
+    //     // 获取历史消息
+    //     fetchMessages();
 
-        const unsubscribeFn = messageService.subscribeToChannel(channelId, (newMessage) => {
-            setMessages(prev => [...prev, newMessage]);
-        });
+    //     const unsubscribeFn = messageService.subscribeToChannel(channelId, (newMessage) => {
+    //         setMessages(prev => [...prev, newMessage]);
+    //     });
 
-        setUnsubscribe(() => unsubscribeFn);
+    //     setUnsubscribe(() => unsubscribeFn);
 
-        // 清理函数
-        return () => {
-            if (unsubscribe) {
-                unsubscribe();
-            }
-        };
-    }, [channelId, fetchMessages]);
+    //     // 清理函数
+    //     return () => {
+    //         if (unsubscribe) {
+    //             unsubscribe();
+    //         }
+    //     };
+    // }, [channelId, fetchMessages]);
 
     // 添加新消息到列表
     const addMessage = useCallback((newMessage) => {

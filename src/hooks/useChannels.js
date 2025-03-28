@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { channelService } from '../services/channelService';
 import { ChannelStep, ChannelType } from '../components/channels/types';
 
-export const useChannels = () => {
+export const useChannels = (user) => {
     // 状态管理
     const [isCreating, setIsCreating] = useState(false);
     const [currentStep, setCurrentStep] = useState(ChannelStep.SELECT_ACTION);
@@ -14,6 +14,7 @@ export const useChannels = () => {
     const [textChannels, setTextChannels] = useState([]);
     const [voiceChannels, setVoiceChannels] = useState([]);
     const [loading, setLoading] = useState(false);
+
 
     // 初始化加载频道列表
     useEffect(() => {
@@ -78,7 +79,12 @@ export const useChannels = () => {
                 return false;
             }
 
-            const success = await channelService.joinChannel(channelId);
+            // 先退出当前的房间
+            if (isInRoom) {
+                await leaveChannel();
+            }
+
+            const success = await channelService.joinChannel(channelId, user);
             if (success) {
                 setIsInRoom(true);
                 const channel = [...textChannels, ...voiceChannels].find(c =>
@@ -100,7 +106,7 @@ export const useChannels = () => {
     const leaveChannel = async () => {
         try {
             if (currentRoom) {
-                const success = await channelService.leaveChannel(currentRoom.key);
+                const success = await channelService.leaveChannel(currentRoom.key, user);
                 if (success) {
                     setIsInRoom(false);
                     setCurrentRoom(null);
