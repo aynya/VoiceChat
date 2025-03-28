@@ -8,10 +8,10 @@ const baseUrl = 'http://localhost:3001/api'
 export const messageService = {
     // 获取频道消息历史
     getChannelMessages: async (channelId) => {
-
         const response = await axios.get(`${baseUrl}/rooms`)
         // 之后用后端优化这个查询
         const currentRoom = response.data.find(room => room.key === channelId)
+        console.log("获取的messages", currentRoom.messages)
         return currentRoom.messages
     },
 
@@ -24,6 +24,7 @@ export const messageService = {
         //     body: JSON.stringify(message)
         // });
         // return await response.json();
+        console.log(4320840304)
         const newMessage = {
             type: 'user',
             username: user.username,

@@ -68,8 +68,10 @@ const TextChannel = forwardRef((props, ref) => {
   const [inputValue, setInputValue] = useState('');
   const messageListRef = useRef(null); // 新增ref
   const messages = props.messages;
-  const addMessage = props.addMessage;
+  console.log("实际的messages", messages)
+  const sendMessage = props.sendMessage;
   const isInRoom = props.isInRoom;
+  const refreshMessages = props.refreshMessages;
 
   // 修改后的消息跳转处理
   const handleMessageJump = (messageId) => {
@@ -105,16 +107,17 @@ const TextChannel = forwardRef((props, ref) => {
   const handleSend = () => {
     if (!inputValue.trim()) return;
 
-    const newMessage = {
-      id: messages.length + 1,
-      type: 'user',
-      username: '你',
-      avatar: 'https://example.com/avatar2.png',
-      content: inputValue,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
+    // const newMessage = {
+    //   id: messages.length + 1,
+    //   type: 'user',
+    //   username: '你',
+    //   avatar: 'https://example.com/avatar2.png',
+    //   content: inputValue,
+    //   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    // };
 
-    addMessage(newMessage);
+    sendMessage(inputValue);
+    refreshMessages();
     // setMessages([...messages, newMessage]);
     setInputValue('');
   };

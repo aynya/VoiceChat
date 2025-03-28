@@ -16,7 +16,7 @@ const Right = (props) => {
     const handleMessageJump = (messageId) => messageListRef.current.handleMessageJump(messageId);
     return (
         <Layout>
-            <TextChannel ref={messageListRef} messages={messages} addMessage={props.addMessage} isInRoom={props.isInRoom}></TextChannel>
+            <TextChannel ref={messageListRef} messages={messages} sendMessage={props.sendMessage} isInRoom={props.isInRoom} refreshMessages={props.refreshMessages}></TextChannel>
             {openUserPanel && <PersonsPanel currentRoom={props.currentRoom}></PersonsPanel>}
             <div style={{ position: 'fixed', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 1000 }}>
                 <RightActionBar

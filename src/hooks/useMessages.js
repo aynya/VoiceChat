@@ -2,23 +2,37 @@ import { useState, useEffect, useCallback } from 'react';
 import { message } from 'antd';
 import { messageService } from '../services/messageService';
 
-export const useMessages = (channelId, user) => {
+export const useMessages = (currentRoom, user, setCurrentRoom) => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [unsubscribe, setUnsubscribe] = useState(null);
 
+    useEffect(() => {
+        if (!currentRoom) {
+            setMessages([]);
+            return;
+        }
+        if (currentRoom) {
+            fetchMessages();
+        }
+    }, [currentRoom?.id]);
+
     // 获取频道消息历史
     const fetchMessages = useCallback(async () => {
-        if (!channelId) {
+        console.log(1111111)
+        if (!currentRoom) {
             setMessages([]);
             return;
         }
         setLoading(true);
         setError(null);
         try {
-            const data = await messageService.getChannelMessages(channelId);
+            const data = await messageService.getChannelMessages(currentRoom.key);
+            console.log(data)
+            setCurrentRoom({...currentRoom, messages: data})
             setMessages(data);
+            console.log("获取的消息", data)
         } catch (err) {
             console.error('获取消息失败:', err);
             setError('获取消息失败');
@@ -26,22 +40,23 @@ export const useMessages = (channelId, user) => {
         } finally {
             setLoading(false);
         }
-    }, [channelId]);
+    }, [currentRoom]);
 
     // 发送消息
-    const sendMessage = useCallback(async (content) => {
-        if (!channelId) return;
+    const sendMessage = (async (content) => {
+        if (!currentRoom) return;
 
         try {
-            const newMessage = await messageService.sendMessage(channelId, { content }, user);
-            setMessages(prev => [...prev, newMessage]);
+            const newMessage = await messageService.sendMessage(currentRoom.key, { content }, user);
+            // setMessages(prev => [...prev, newMessage])
+            setCurrentRoom({...currentRoom, messages: [...currentRoom.messages, newMessage]})
             return newMessage;
         } catch (err) {
             console.error('发送消息失败:', err);
             message.error('发送消息失败');
             throw err;
         }
-    }, [channelId]);
+    });
 
     // // 订阅频道消息更新
     // useEffect(() => {

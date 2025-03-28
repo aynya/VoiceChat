@@ -16,6 +16,7 @@ export const useChannels = (user) => {
     const [loading, setLoading] = useState(false);
 
 
+
     // 初始化加载频道列表
     useEffect(() => {
         const loadChannels = async () => {
@@ -92,7 +93,9 @@ export const useChannels = (user) => {
                 );
                 if (channel) {
                     console.log(channel.messages)
+                    console.log("加入之前", currentRoom)
                     setCurrentRoom({...channel, users: channel.users.concat(user)});
+                    console.log("加入之后", {...channel, users: channel.users.concat(user)})
                 }
             }
             return success;
@@ -212,6 +215,7 @@ export const useChannels = (user) => {
         handleNextStep,
         handleSelectType,
         handleExit,
-        handleLogout
+        handleLogout,
+        setCurrentRoom,
     };
 }; 

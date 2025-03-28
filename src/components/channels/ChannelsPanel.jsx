@@ -28,12 +28,15 @@ const ChannelsPanel = () => {
         handleNextStep,
         handleSelectType,
         handleExit,
-        handleLogout
+        handleLogout,
+        setCurrentRoom,
     } = useChannels(user);
 
-    const { messages, loading, error, sendMessage, addMessage, updateMessage, deleteMessage, refreshMessages } = useMessages(currentRoom?.key, user);
+    const { messages, loading, error, sendMessage, addMessage, updateMessage, deleteMessage, refreshMessages } = useMessages(currentRoom, user, setCurrentRoom);
     console.log(currentRoom?.key);
     console.log(currentRoom?.users);
+
+    console.log("最上层的",currentRoom);
 
     return (
         <Layout hasSider style={{ height: '100vh' }}>

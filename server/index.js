@@ -177,7 +177,7 @@ app.post(`/api/rooms/:roomId/users`, (request, response) => {
         username: body.username,
         avatar: body.avatar,
     }
-    console.log(newUser);
+    // console.log(newUser);
     room.users = room.users.concat(newUser)
     response.json(newUser)
 })
@@ -214,13 +214,14 @@ app.post(`/api/rooms/:roomId/messages`, (request, response) => {
     const body = request.body
     const roomId = (request.params.roomId)
     const room = rooms.find(room => room.id === roomId)
+    // console.log(body)
     if(!room) {
         return response.status(404).json({
             error: 'room not found'
         })
     }
     const message = {
-        id: generatMessageId(),
+        id: generatMessageId(room),
         type: body.type,
         username: body.username,
         avatar: body.avatar,
@@ -228,6 +229,7 @@ app.post(`/api/rooms/:roomId/messages`, (request, response) => {
         timestamp: body.timestamp
     }
     room.messages = room.messages.concat(message)
+    // console.log(room.messages)
     response.json(message)
 })
 
@@ -246,21 +248,21 @@ const generatRoomId = () => {
     const maxId = rooms.length > 0
       ? Math.max(...rooms.map(n => n.id))
       : 0
-    return maxId + 1
+    return (maxId + 1) + ''
 }
 
 const generatMessageId = (room) => {
     const maxId = room.messages.length > 0
       ? Math.max(...room.messages.map(n => n.id))
       : 0
-    return maxId + 1
+    return (maxId + 1) + ''
 }
 
 const generatUserId = (room) => {
     const maxId = room.users.length > 0
       ? Math.max(...room.users.map(n => n.id))
       : 0
-    return maxId + 1
+    return (maxId + 1) + ''
 }
 
 app.post(`/api/rooms`, (request, response) => { // 创建房间
