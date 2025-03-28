@@ -92,7 +92,7 @@ export const useChannels = (user) => {
                 );
                 if (channel) {
                     console.log(channel.messages)
-                    setCurrentRoom(channel);
+                    setCurrentRoom({...channel, users: channel.users.concat(user)});
                 }
             }
             return success;
