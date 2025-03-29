@@ -8,14 +8,14 @@ import {
     AudioOutlined,
     AudioMutedOutlined
 } from '@ant-design/icons';
+import useRoomStore from '../../store/roomStore';
 
-const ChannelFooter = ({
-    isInRoom,
-    currentRoom,
-    onCreate,
-    onExit,
-    onLogout
-}) => {
+const ChannelFooter = () => {
+    const isInRoom = useRoomStore((state) => state.isInRoom);
+    const currentRoom = useRoomStore((state) => state.currentRoom);
+    const handleCreate = useRoomStore((state) => state.handleCreate);
+    const handleExit = useRoomStore((state) => state.handleExit);
+    const handleLogout = useRoomStore((state) => state.handleLogout);
     const [isSpeaking, setIsSpeaking] = useState(false);
 
     const handleVoiceToggle = () => {
@@ -56,7 +56,7 @@ const ChannelFooter = ({
                         textOverflow: 'ellipsis'
                     }}>
                         <CheckCircleOutlined style={{ color: '#52c41a', marginRight: 4 }} />
-                        当前房间：{currentRoom?.label}
+                        当前房间：{currentRoom?.id}
                     </div>
                 </Tooltip>
             )}
@@ -74,7 +74,7 @@ const ChannelFooter = ({
                             shape="circle"
                             icon={<PlusOutlined />}
                             size="large"
-                            onClick={onCreate}
+                            onClick={handleCreate}
                         />
                     )}
                     {isInRoom && (
@@ -84,7 +84,7 @@ const ChannelFooter = ({
                                 shape="circle"
                                 icon={<CloseOutlined />}
                                 size="large"
-                                onClick={() => {setIsSpeaking(false); onExit(); }}
+                                onClick={() => {setIsSpeaking(false); handleExit(); }}
                             />
                             <Button
                                 type={isSpeaking ? "primary" : "default"}
@@ -104,7 +104,7 @@ const ChannelFooter = ({
                             {
                                 key: 'logout',
                                 label: <span style={{ color: '#ff4d4f' }}>退出登录</span>,
-                                onClick: onLogout
+                                onClick: handleLogout
                             }
                         ]
                     }}

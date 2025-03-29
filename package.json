@@ -7,14 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview", 
+    "preview": "vite preview",
     "server": "json-server -p3001 --watch db.json"
   },
   "dependencies": {
     "antd": "^5.24.4",
     "axios": "^1.8.4",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

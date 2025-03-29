@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Menu, Collapse } from 'antd';
 import { MessageOutlined, TeamOutlined } from '@ant-design/icons';
+import useRoomStore from '../../store/roomStore'
 
-const ChannelList = ({
-    textChannels = [],
-    voiceChannels = [],
-    currentRoom,
-    onChannelSelect
-}) => {
+const ChannelList = () => {
+
+    const textChannels = useRoomStore((state) => state.rooms).filter((room) => room.type === 'text')
+    const voiceChannels = useRoomStore((state) => state.rooms).filter((room) => room.type === 'voice')
+    const currentRoom = useRoomStore((state) => state.currentRoom)
+    const joinRoom = useRoomStore((state) => state.joinRoom)
+    const fetchRooms = useRoomStore((state) => state.fetchRooms)
+
+    useEffect(() => {
+        const init = async () => {
+            await fetchRooms()
+        }
+        init()
+    }, [fetchRooms])
+
     const items = [
         {
             key: 'text-channels',
@@ -17,8 +27,8 @@ const ChannelList = ({
                     mode="inline"
                     items={Array.isArray(textChannels) ? textChannels : []}
                     selectable
-                    onSelect={(e) => onChannelSelect(e.key)}
-                    selectedKeys={Array.isArray(textChannels) && textChannels.some((c) => c.key === currentRoom?.key) ? [currentRoom?.key] : []}
+                    onSelect={(e) => {joinRoom(e.key)}}
+                    selectedKeys={Array.isArray(textChannels) && textChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}
                 />
             )
         },
@@ -30,8 +40,8 @@ const ChannelList = ({
                     mode="inline"
                     items={Array.isArray(voiceChannels) ? voiceChannels : []}
                     selectable
-                    onSelect={(e) => onChannelSelect(e.key)}
-                    selectedKeys={Array.isArray(voiceChannels) && voiceChannels.some((c) => c.key === currentRoom?.key) ? [currentRoom?.key] : []}
+                    onSelect={(e) => joinRoom(e.key)}
+                    selectedKeys={Array.isArray(voiceChannels) && voiceChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}
                 />
             )
         }

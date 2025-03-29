@@ -6,18 +6,16 @@ import TextChannel from '../chat/TextChannel'
 import { Drawer, Button, List, Layout } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
-const Right = (props) => {
+const Right = () => {
     const [openUserPanel, setOpenUserPanel] = useState(false);
     const [openSearchPanel, setOpenSearchPanel] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState('');
     const messageListRef = useRef(null);
-    const messages = props.currentRoom?.messages || [];
 
     const handleMessageJump = (messageId) => messageListRef.current.handleMessageJump(messageId);
     return (
         <Layout>
-            <TextChannel ref={messageListRef} messages={messages} sendMessage={props.sendMessage} isInRoom={props.isInRoom} refreshMessages={props.refreshMessages}></TextChannel>
-            {openUserPanel && <PersonsPanel currentRoom={props.currentRoom}></PersonsPanel>}
+            <TextChannel ref={messageListRef}></TextChannel>
+            {openUserPanel && <PersonsPanel ></PersonsPanel>}
             <div style={{ position: 'fixed', right: 0, top: '50%', transform: 'translateY(-50%)', zIndex: 1000 }}>
                 <RightActionBar
                     onUserClick={() => {
@@ -46,9 +44,6 @@ const Right = (props) => {
                 }
             >
                 <SearchPanel
-                    messages={messages}
-                    searchKeyword={searchKeyword}
-                    onSearchChange={(e) => setSearchKeyword(e.target.value)}
                     onMessageClick={handleMessageJump}
                 />
             </Drawer>

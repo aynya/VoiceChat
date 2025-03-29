@@ -14,9 +14,11 @@ import {
   SmileOutlined,
   PaperClipOutlined,
 } from '@ant-design/icons';
-import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useRef, forwardRef, useImperativeHandle, useEffect } from 'react';
 const { Content } = Layout;
 import './text.css'
+import useMessageStore from '../../store/messageStore';
+import useRoomStore from '../../store/roomStore';
 
 
 // 消息组件
@@ -64,14 +66,19 @@ const SystemMessage = ({ content }) => (
 );
 
 // 主组件
-const TextChannel = forwardRef((props, ref) => {
+const TextChannel = forwardRef((_, ref) => {
   const [inputValue, setInputValue] = useState('');
   const messageListRef = useRef(null); // 新增ref
-  const messages = props.messages;
-  console.log("实际的messages", messages)
-  const sendMessage = props.sendMessage;
-  const isInRoom = props.isInRoom;
-  const refreshMessages = props.refreshMessages;
+
+  const currentRoom = useRoomStore((state) => state.currentRoom);
+  const messages = currentRoom?.messages || [];
+  const sendMessage = useMessageStore((state) => state.sendMessage);
+  const isInRoom = useRoomStore((state) => state.isInRoom);
+  const fetchMessages = useMessageStore((state) => state.fetchMessages);
+  const fetchRooms = useRoomStore((state) => state.fetchRooms);
+
+  
+
 
   // 修改后的消息跳转处理
   const handleMessageJump = (messageId) => {
@@ -104,21 +111,11 @@ const TextChannel = forwardRef((props, ref) => {
     handleMessageJump,
   }))
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputValue.trim()) return;
-
-    // const newMessage = {
-    //   id: messages.length + 1,
-    //   type: 'user',
-    //   username: '你',
-    //   avatar: 'https://example.com/avatar2.png',
-    //   content: inputValue,
-    //   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    // };
-
-    sendMessage(inputValue);
-    refreshMessages();
-    // setMessages([...messages, newMessage]);
+    sendMessage(currentRoom.id, inputValue);
+    await fetchMessages(currentRoom.id);
+    await fetchRooms();
     setInputValue('');
   };
   return (

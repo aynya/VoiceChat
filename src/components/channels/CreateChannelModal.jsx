@@ -1,24 +1,24 @@
 import React from 'react';
 import { Modal, Form, Input, Space, Button } from 'antd';
 import { ChannelStep, ChannelType } from './types';
+import useRoomStore from '../../store/roomStore';
 
-const CreateChannelModal = ({
-    isCreating,
-    currentStep,
-    channelName,
-    onCancel,
-    onConfirm,
-    onNextStep,
-    onSelectType,
-    setChannelName,
-    onSetCurrentStep,
-}) => {
-    // console.log(currentStep);
+const CreateChannelModal = (
+) => {
+    const isCreating = useRoomStore((state) => state.isCreating);
+    const currentStep = useRoomStore((state) => state.currentStep);
+    const roomId = useRoomStore((state) => state.roomId);
+    const handleCancel = useRoomStore((state) => state.handleCancel);
+    const handleConfirm = useRoomStore((state) => state.handleConfirm);
+    const handleNextStep = useRoomStore((state) => state.handleNextStep);
+    const handleSelectType = useRoomStore((state) => state.handleSelectType);
+    const setRoomId = useRoomStore((state) => state.setRoomId);
+    const handleSetCurrentStep = useRoomStore((state) => state.handleSetCurrentStep);
     return (
         <Modal
             open={isCreating}
-            onCancel={onCancel}
-            onOk={onConfirm}
+            onCancel={handleCancel}
+            onOk={handleConfirm}
             okText={currentStep === ChannelStep.JOIN_NAME ? '加入' : '创建'}
             cancelText="取消"
             title={
@@ -31,14 +31,14 @@ const CreateChannelModal = ({
         >
             {currentStep === ChannelStep.SELECT_ACTION && (
                 <Space direction="vertical" style={{ width: '100%' }}>
-                    <Button block onClick={onNextStep}>
+                    <Button block onClick={handleNextStep}>
                         创建频道
                     </Button>
                     <Button
                         block
                         onClick={() => {
-                            onSelectType(ChannelType.TEXT);
-                            onSetCurrentStep(ChannelStep.JOIN_NAME);
+                            handleSelectType(ChannelType.TEXT);
+                            handleSetCurrentStep(ChannelStep.JOIN_NAME);
                         }}
                     >
                         加入频道
@@ -47,10 +47,10 @@ const CreateChannelModal = ({
             )}
             {currentStep === ChannelStep.CREATE_TYPE && (
                 <Space direction="vertical" style={{ width: '100%' }}>
-                    <Button block onClick={() => onSelectType(ChannelType.TEXT)}>
+                    <Button block onClick={() => handleSelectType(ChannelType.TEXT)}>
                         文字频道
                     </Button>
-                    <Button block onClick={() => onSelectType(ChannelType.VOICE)}>
+                    <Button block onClick={() => handleSelectType(ChannelType.VOICE)}>
                         语音频道
                     </Button>
                 </Space>
@@ -59,8 +59,8 @@ const CreateChannelModal = ({
                 <Form>
                     <Form.Item label="房间号">
                         <Input
-                            value={channelName}
-                            onChange={(e) => setChannelName(e.target.value)}
+                            value={roomId}
+                            onChange={(e) => setRoomId(e.target.value)}
                             placeholder="请输入房间号"
                             style={{
                                 borderRadius: 4,

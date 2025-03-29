@@ -4,11 +4,14 @@ const { Sider } = Layout;
 import { TeamOutlined, UserOutlined } from '@ant-design/icons';
 import React from 'react';
 import './friend.css';
+import useRoomStore from '../../store/roomStore';
 
 
 
 // 好友列表组件
-const PersonsPanel = ({currentRoom}) => {
+const PersonsPanel = () => {
+    const currentRoom = useRoomStore(state => state.currentRoom);
+    console.log(currentRoom)
     const onlineUsers = currentRoom?.users || [];
     return (
     <Sider

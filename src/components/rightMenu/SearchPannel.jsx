@@ -1,18 +1,26 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 import { Input, Divider, List, Avatar } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 import './search.css';
+import useMessageStore from "../../store/messageStore";
+import useRoomStore from "../../store/roomStore";
 
 
 // 搜索面板组件
-const SearchPanel = ({ messages, searchKeyword, onSearchChange, onMessageClick }) => {
+const SearchPanel = ({ onMessageClick }) => {
+    const currentRoom = useRoomStore((state) => state.currentRoom);
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const onSearchChange = (e) => {
+        setSearchKeyword(e.target.value);
+    };
     const filteredMessages = useMemo(() => {
+        const messages = currentRoom?.messages || [];
         return messages.filter(msg =>
             msg.content.toLowerCase().includes(searchKeyword.toLowerCase())
         );
-    }, [messages, searchKeyword]);
+    }, [currentRoom?.messages, searchKeyword]);
 
     return (
         <div style={{ padding: '16px' }}>

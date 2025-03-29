@@ -11,9 +11,9 @@ const App = () => {
         <ChannelsPanel
 
         ></ChannelsPanel>
-        {/* <Right></Right> */}
       </Layout>
     </div>
   )
 }
+
 export default App

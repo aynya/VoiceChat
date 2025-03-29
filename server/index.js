@@ -244,13 +244,6 @@ app.get(`/api/rooms/:roomId`, (request, response) => {
     response.json(room)
 })
 
-const generatRoomId = () => {
-    const maxId = rooms.length > 0
-      ? Math.max(...rooms.map(n => n.id))
-      : 0
-    return (maxId + 1) + ''
-}
-
 const generatMessageId = (room) => {
     const maxId = room.messages.length > 0
       ? Math.max(...room.messages.map(n => n.id))
@@ -258,12 +251,6 @@ const generatMessageId = (room) => {
     return (maxId + 1) + ''
 }
 
-const generatUserId = (room) => {
-    const maxId = room.users.length > 0
-      ? Math.max(...room.users.map(n => n.id))
-      : 0
-    return (maxId + 1) + ''
-}
 
 app.post(`/api/rooms`, (request, response) => { // 创建房间
     const body = request.body
@@ -276,12 +263,12 @@ app.post(`/api/rooms`, (request, response) => { // 创建房间
     }
 
     const room = {
-        key: body.key,
         label: body.label,
         type: body.type,
         users: body.users,
         messages: body.messages,
-        id: body.key
+        id: body.id,
+        key: body.id,
     }
 
     rooms = rooms.concat(room)

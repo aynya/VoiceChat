@@ -25,34 +25,42 @@ export const channelService = {
         return voiceChannel;
     },
 
+    getRooms: async () => {
+        // TODO: 替换为实际的API调用
+        const response = await axios.get(`${baseUrl}/rooms`);
+        // console.log("获取的rooms", response.data)
+        return response.data;
+    },
+
     // 创建新频道
-    createChannel: async (channelName, type) => {
+    createChannel: async (roomId, type) => {
         // TODO: 替换为实际的API调用
         const newRoom = {
-            key: channelName,
-            label: channelName,
+            id: roomId,
+            label: roomId,
             type: type,
             users: [],
-            messages: []
+            messages: [],
+            key: roomId
         }
         await axios.post(`${baseUrl}/rooms`, newRoom)
         return newRoom;
     },
 
     // 加入频道
-    joinChannel: async (channelId, user) => {
+    joinChannel: async (roomId, user) => {
         // TODO: 替换为实际的API调用
-        await axios.post(`${baseUrl}/rooms/${channelId}/users`, user)
+        await axios.post(`${baseUrl}/rooms/${roomId}/users`, user)
         
-        console.log("加入频道", channelId, user)
+        console.log("加入频道", roomId, user)
         return true;
     },
 
     // 退出频道
-    leaveChannel: async (channelId, user) => {
+    leaveChannel: async (roomId, user) => {
         // TODO: 替换为实际的API调用
-        await axios.delete(`${baseUrl}/rooms/${channelId}/users/${user.id}`)
-        console.log("退出频道", channelId, user)
+        await axios.delete(`${baseUrl}/rooms/${roomId}/users/${user.id}`)
+        console.log("退出频道", roomId, user)
         return true;
     }
 }; 
