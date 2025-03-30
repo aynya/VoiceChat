@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Avatar, Dropdown, Tooltip } from 'antd';
 import {
     UserOutlined,
@@ -20,15 +20,46 @@ const ChannelFooter = () => {
     const handleLogout = useRoomStore((state) => state.handleLogout);
     const [isSpeaking, setIsSpeaking] = useState(false);
 
-    const { localAudioStream, remoteAudioStream } = useSocketStore();
+    const {roomId, localAudioStream, remoteAudioStream, closeLocalAudioStream, initLocalAudioStream } = useSocketStore();
+
+    useEffect(() => {
+        setIsSpeaking(false)
+    }, [roomId]);
+
+    // 初始化时禁用音频轨道
+    useEffect(() => {
+        if (localAudioStream) {
+            const audioTracks = localAudioStream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                audioTracks.forEach((track) => {
+                    track.enabled = false; // 初始状态禁用音频轨道
+                });
+                console.log('初始化：音频轨道已禁用');
+            }
+        }
+    }, [localAudioStream]);
+    // console.log(localAudioStream, remoteAudioStream)
+    // 控制语音开关
     const handleVoiceToggle = () => {
-        setIsSpeaking(!isSpeaking);
-        // TODO: 在这里添加实际的语音控制逻辑
-        if (!isSpeaking) {
-            // 开始录音
+        if (!localAudioStream) {
+            console.error('本地音频流未初始化');
+            return;
+        }
+
+        const newIsSpeaking = !isSpeaking; // 计算新的状态
+        setIsSpeaking(newIsSpeaking);
+
+        // 获取所有音频轨道并切换状态
+        const audioTracks = localAudioStream.getAudioTracks();
+        if (audioTracks.length > 0) {
+            audioTracks.forEach((track) => {
+                track.enabled = newIsSpeaking; // 同步音频轨道状态
+            });
+        }
+
+        if (newIsSpeaking) {
             console.log('开始录音');
         } else {
-            // 停止录音
             console.log('停止录音');
         }
     };

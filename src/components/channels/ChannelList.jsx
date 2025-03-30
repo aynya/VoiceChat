@@ -14,6 +14,9 @@ const ChannelList = () => {
     const fetchRooms = useRoomStore((state) => state.fetchRooms)
     
     const jRoom = useSocketStore((state) => state.joinRoom)
+    const roomId = useSocketStore((state) => state.roomId)
+    const leaveRoom = useSocketStore((state) => state.leaveRoom)
+    const setRoomId = useSocketStore((state) => state.setRoomId)
 
     useEffect(() => {
         const init = async () => {
@@ -31,7 +34,9 @@ const ChannelList = () => {
                     mode="inline"
                     items={Array.isArray(textChannels) ? textChannels : []}
                     selectable
-                    onSelect={(e) => {joinRoom(e.key); jRoom(e.key)}}
+                    onSelect={(e) => {
+                        joinRoom(e.key); 
+                    }}
                     selectedKeys={Array.isArray(textChannels) && textChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}
                 />
             )
@@ -44,7 +49,7 @@ const ChannelList = () => {
                     mode="inline"
                     items={Array.isArray(voiceChannels) ? voiceChannels : []}
                     selectable
-                    onSelect={(e) => joinRoom(e.key)}
+                    onSelect={(e) => {joinRoom(e.key); }}
                     selectedKeys={Array.isArray(voiceChannels) && voiceChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}
                 />
             )

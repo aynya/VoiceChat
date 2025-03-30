@@ -12,6 +12,7 @@ const useSocketStore = create((set, get) => ({
   message: '',
   myId: '',
   roomId: '',
+  setRoomId: (roomId) => set({ roomId }),
   localAudioStream: null,
   remoteAudioStream: null,
   peersRef: {}, // 存储所有 PeerConnection
@@ -27,34 +28,38 @@ const useSocketStore = create((set, get) => ({
   },
 
   // 离开房间
-  leaveRoom: () => {
-    const { myId, roomId, peersRef } = get();
+  leaveRoom: (roomId) => {
+    const { myId, peersRef } = get();
     if (roomId && myId) {
       socket.emit('leave-room', roomId);
       Object.values(peersRef).forEach(pc => pc.close());
       set({
         messages: [],
         message: '',
-        myId: '',
         roomId: '',
-        localAudioStream: null,
-        remoteAudioStream: null,
         peersRef: {},
       });
     }
   },
 
   // 发送消息
-  sendMessage: () => {
-    const { message } = get();
+  sendMessage: (message) => {
+    const { myId} = get();
     if (message.trim()) {
-      socket.emit('chat message', message);
+      socket.emit('chat message', {
+        type: 'user',
+        username: myId,
+        avatar: "https://avatars.githubusercontent.com/u/1014730?v=4",
+        content: message,
+        timestamp: Date.now(),
+      });
       set({ message: '' });
     }
   },
 
   // 初始化本地音频流
   initLocalAudioStream: async () => {
+    console.log('开启')
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       set({ localAudioStream: stream });
@@ -65,6 +70,7 @@ const useSocketStore = create((set, get) => ({
 
   // 关闭本地音频流
   closeLocalAudioStream: () => {
+    console.log('tuichu')
     const { localAudioStream } = get();
     if (localAudioStream) {
       localAudioStream.getTracks().forEach(track => track.stop());
@@ -141,9 +147,13 @@ const useSocketStore = create((set, get) => ({
 
   // 监听 Socket 事件
   setupSocketListeners: () => {
+    const { messages } = get();
     socket.on('myId', (id) => set({ myId: id }));
     socket.on('chat message', (msg) =>
-      set((state) => ({ messages: [...state.messages, msg] }))
+      set((state) => ({ messages: [...state.messages, {
+        ...msg, 
+        id: messages.length + 1
+      }] }))
     );
     socket.on('user-connected', (userId) =>
       get().createPeerConnection(userId, true)

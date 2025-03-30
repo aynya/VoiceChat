@@ -3,6 +3,7 @@ import { message } from 'antd';
 import { channelService } from '../services/channelService';
 import useUserStore from './userStore';
 import { ChannelStep, ChannelType } from '../components/channels/types';
+import useSocketStore from './socketStore';
 
 const useRoomStore = create((set) => ({
     rooms: [],
@@ -61,6 +62,7 @@ const useRoomStore = create((set) => ({
         try {
             const { user } = useUserStore.getState();
             const { exitRoom, rooms, isInRoom } = useRoomStore.getState();
+            const {joinRoom, setRoomId, localAudioStream } = useSocketStore.getState();
             // console.log(rooms)
             const room = rooms.find(room => room.id === roomId);
             if (!room) {
@@ -77,7 +79,17 @@ const useRoomStore = create((set) => ({
                 message.error('加入房间失败');
                 return false;
             }
-
+            joinRoom(roomId)
+            setRoomId(roomId)
+            if (localAudioStream) { // 如果本地音频流存在，则禁用音频轨道
+                const audioTracks = localAudioStream.getAudioTracks();
+                if (audioTracks.length > 0) {
+                    audioTracks.forEach((track) => {
+                        track.enabled = false; // 初始状态禁用音频轨道
+                    });
+                    console.log('初始化：音频轨道已禁用');
+                }
+            }
             set(() => ({
                 isInRoom: true,
                 currentRoom: {
@@ -97,13 +109,25 @@ const useRoomStore = create((set) => ({
         try {
             const { isInRoom, currentRoom } = useRoomStore.getState();
             const { user } = useUserStore.getState();
+            const { leaveRoom, roomId, localAudioStream } = useSocketStore.getState();
 
             if (!isInRoom) {
                 console.warn('未加入任何房间，无需退出');
                 return;
             }
             await channelService.leaveChannel(currentRoom.id, user);
-
+            
+            leaveRoom(roomId)
+            if (localAudioStream) {
+                const audioTracks = localAudioStream.getAudioTracks();
+                if (audioTracks.length > 0) {
+                    audioTracks.forEach((track) => {
+                        track.enabled = false; // 初始状态禁用音频轨道
+                    });
+                    console.log('初始化：音频轨道已禁用');
+                }
+            }
+            
             set(() => ({
                 isInRoom: false,
                 currentRoom: null

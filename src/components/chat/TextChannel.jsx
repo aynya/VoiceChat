@@ -19,6 +19,7 @@ const { Content } = Layout;
 import './text.css'
 import useMessageStore from '../../store/messageStore';
 import useRoomStore from '../../store/roomStore';
+import useSocketStore from '../../store/socketStore';
 
 
 // 消息组件
@@ -71,12 +72,15 @@ const TextChannel = forwardRef((_, ref) => {
   const messageListRef = useRef(null); // 新增ref
 
   const currentRoom = useRoomStore((state) => state.currentRoom);
-  const messages = currentRoom?.messages || [];
-  const sendMessage = useMessageStore((state) => state.sendMessage);
+  // const messages = currentRoom?.messages || [];
+  // const sendMessage = useMessageStore((state) => state.sendMessage);
   const isInRoom = useRoomStore((state) => state.isInRoom);
-  const fetchMessages = useMessageStore((state) => state.fetchMessages);
-  const fetchRooms = useRoomStore((state) => state.fetchRooms);
+  // const fetchMessages = useMessageStore((state) => state.fetchMessages);
+  // const fetchRooms = useRoomStore((state) => state.fetchRooms);
 
+
+  const messages = useSocketStore((state) => state.messages);
+  const sendMessage = useSocketStore((state) => state.sendMessage);
   
 
 
@@ -113,9 +117,9 @@ const TextChannel = forwardRef((_, ref) => {
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-    sendMessage(currentRoom.id, inputValue);
-    await fetchMessages(currentRoom.id);
-    await fetchRooms();
+    sendMessage(inputValue);
+    // await fetchMessages(currentRoom.id);
+    // await fetchRooms();
     setInputValue('');
   };
   return (

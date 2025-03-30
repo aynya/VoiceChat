@@ -168,6 +168,7 @@ io.on('connection', (socket) => {
 
   // 用户离开房间
   socket.on('leave-room', (roomId) => {
+    console.log(roomId)
     if (socket.roomId) {
       console.log(`用户 ${socket.id} 离开房间 ${roomId}`);
       socket.leave(roomId);
