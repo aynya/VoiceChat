@@ -10,6 +10,8 @@ import {
 } from '@ant-design/icons';
 import useRoomStore from '../../store/roomStore';
 
+import useSocketStore from '../../store/socketStore';
+
 const ChannelFooter = () => {
     const isInRoom = useRoomStore((state) => state.isInRoom);
     const currentRoom = useRoomStore((state) => state.currentRoom);
@@ -18,6 +20,7 @@ const ChannelFooter = () => {
     const handleLogout = useRoomStore((state) => state.handleLogout);
     const [isSpeaking, setIsSpeaking] = useState(false);
 
+    const { localAudioStream, remoteAudioStream } = useSocketStore();
     const handleVoiceToggle = () => {
         setIsSpeaking(!isSpeaking);
         // TODO: 在这里添加实际的语音控制逻辑
@@ -43,6 +46,9 @@ const ChannelFooter = () => {
             flexDirection: 'column',
             gap: 12
         }}>
+            {/* 音频元素 */}
+            <audio ref={(ref) => ref && (ref.srcObject = localAudioStream)} autoPlay muted />
+            <audio ref={(ref) => ref && (ref.srcObject = remoteAudioStream)} autoPlay />
             {isInRoom && (
                 <Tooltip title="当前所在房间">
                     <div style={{
@@ -84,7 +90,7 @@ const ChannelFooter = () => {
                                 shape="circle"
                                 icon={<CloseOutlined />}
                                 size="large"
-                                onClick={() => {setIsSpeaking(false); handleExit(); }}
+                                onClick={() => { setIsSpeaking(false); handleExit(); }}
                             />
                             <Button
                                 type={isSpeaking ? "primary" : "default"}

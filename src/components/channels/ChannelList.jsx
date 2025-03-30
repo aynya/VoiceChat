@@ -3,6 +3,8 @@ import { Menu, Collapse } from 'antd';
 import { MessageOutlined, TeamOutlined } from '@ant-design/icons';
 import useRoomStore from '../../store/roomStore'
 
+import useSocketStore from '../../store/socketStore';
+
 const ChannelList = () => {
 
     const textChannels = useRoomStore((state) => state.rooms).filter((room) => room.type === 'text')
@@ -10,6 +12,8 @@ const ChannelList = () => {
     const currentRoom = useRoomStore((state) => state.currentRoom)
     const joinRoom = useRoomStore((state) => state.joinRoom)
     const fetchRooms = useRoomStore((state) => state.fetchRooms)
+    
+    const jRoom = useSocketStore((state) => state.joinRoom)
 
     useEffect(() => {
         const init = async () => {
@@ -27,7 +31,7 @@ const ChannelList = () => {
                     mode="inline"
                     items={Array.isArray(textChannels) ? textChannels : []}
                     selectable
-                    onSelect={(e) => {joinRoom(e.key)}}
+                    onSelect={(e) => {joinRoom(e.key); jRoom(e.key)}}
                     selectedKeys={Array.isArray(textChannels) && textChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}
                 />
             )

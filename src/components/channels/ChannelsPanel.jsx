@@ -1,12 +1,29 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Layout } from 'antd';
 import ChannelList from './ChannelList';
 import CreateChannelModal from './CreateChannelModal';
 import ChannelFooter from './ChannelFooter';
 import Right from '../rightMenu/Right';
+import useSocketStore from '../../store/socketStore';
 const { Sider } = Layout;
 
+
 const ChannelsPanel = () => {
+    const { initLocalAudioStream, setupSocketListeners } = useSocketStore();
+    useEffect(() => {
+        console.log('App组件加载');
+
+        // 初始化本地音频流
+        initLocalAudioStream();
+
+        // 设置 Socket 监听器
+        const cleanupSocketListeners = setupSocketListeners();
+
+        return () => {
+            cleanupSocketListeners(); // 清理监听器
+        };
+    }, []);
+
     return (
         <Layout hasSider style={{ height: '100vh' }}>
             <Sider
@@ -22,7 +39,7 @@ const ChannelsPanel = () => {
             >
                 <ChannelList />
 
-                <ChannelFooter/>
+                <ChannelFooter />
 
                 <CreateChannelModal />
             </Sider>
