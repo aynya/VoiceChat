@@ -42,7 +42,6 @@ const ChannelFooter = () => {
             }
         }
     }, [localAudioStream]);
-    // console.log(localAudioStream, remoteAudioStream)
     // 控制语音开关
     const handleVoiceToggle = () => {
         if (!localAudioStream) {

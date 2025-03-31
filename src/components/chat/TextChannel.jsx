@@ -19,6 +19,7 @@ const { Content } = Layout;
 import './text.css'
 import useRoomStore from '../../store/roomStore';
 import useSocketStore from '../../store/socketStore';
+import useMessageStore from '../../store/messageStore';
 
 
 // 消息组件
@@ -74,6 +75,9 @@ const TextChannel = forwardRef((_, ref) => {
 
   const messages = useSocketStore((state) => state.messages);
   const sendMessage = useSocketStore((state) => state.sendMessage);
+  const roomId = useSocketStore((state) => state.roomId);
+
+  const postMessage = useMessageStore((state) => state.sendMessage);
   
 
 
@@ -110,6 +114,7 @@ const TextChannel = forwardRef((_, ref) => {
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
+    postMessage(roomId, inputValue)
     sendMessage(inputValue);
     setInputValue('');
   };

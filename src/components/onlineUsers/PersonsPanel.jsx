@@ -10,9 +10,6 @@ import useSocketStore from '../../store/socketStore';
 
 // 好友列表组件
 const PersonsPanel = () => {
-    // const currentRoom = useRoomStore(state => state.currentRoom);
-    // console.log(currentRoom)
-    // const onlineUsers = currentRoom?.users || [];
     const users = useSocketStore(state => state.users);
     console.log(users)
     return (

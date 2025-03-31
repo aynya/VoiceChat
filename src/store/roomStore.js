@@ -107,7 +107,7 @@ const useRoomStore = create((set) => ({
     // 退出房间
     exitRoom: async () => {
         try {
-            const { isInRoom, currentRoom } = useRoomStore.getState();
+            const { isInRoom } = useRoomStore.getState();
             const { user } = useUserStore.getState();
             const { leaveRoom, roomId, localAudioStream } = useSocketStore.getState();
 
@@ -115,7 +115,7 @@ const useRoomStore = create((set) => ({
                 console.warn('未加入任何房间，无需退出');
                 return;
             }
-            await channelService.leaveChannel(currentRoom.id, user);
+            await channelService.leaveChannel(roomId, user);
             
             leaveRoom(roomId)
             if (localAudioStream) {

@@ -28,6 +28,7 @@ const useSocketStore = create((set, get) => ({
     console.log(user)
     if (roomId.trim()) {
       socket.emit('join-room', roomId.trim(), user);
+      set({ roomId });
     }
   },
 

@@ -162,12 +162,6 @@ io.on('connection', (socket) => {
     socket.join(roomId); // 加入指定房间
     socket.roomId = roomId; // 存储房间号
     usersMap.set(socket.id, user);
-    // // 获取当前房间的所有用户
-    // const roomUsers = Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(id => ({
-    //   id,
-    //   avatar: "https://avatars.githubusercontent.com/u/1014730?v=4", // 默认头像
-    //   username: 'ay', // 使用 ID 作为用户名
-    // }));
     const roomUsers = Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(id => (usersMap.get(id)))
     // 发送房间中的用户列表给当前用户
     socket.emit('room-users', { roomId, users: roomUsers });
@@ -285,7 +279,6 @@ app.post(`/api/rooms/:roomId/messages`, (request, response) => {
   const body = request.body
   const roomId = (request.params.roomId)
   const room = rooms.find(room => room.id === roomId)
-  // console.log(body)
   if (!room) {
     return response.status(404).json({
       error: 'room not found'

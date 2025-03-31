@@ -10,14 +10,19 @@ const ChannelList = () => {
     const currentRoom = useRoomStore((state) => state.currentRoom)
     const joinRoom = useRoomStore((state) => state.joinRoom)
     const fetchRooms = useRoomStore((state) => state.fetchRooms)
-    
+
 
     useEffect(() => {
         const init = async () => {
-            await fetchRooms()
+            try {
+                await fetchRooms();
+            } catch (error) {
+                console.error('获取房间列表失败:', error);
+            }
         }
         init()
-        setInterval(init, 10000) // 每隔10秒刷新一次房间列表
+        const timeId = setInterval(init, 10000) // 每隔10秒刷新一次房间列表
+        return () => clearInterval(timeId);
     }, [fetchRooms])
 
 
@@ -31,7 +36,7 @@ const ChannelList = () => {
                     items={Array.isArray(textChannels) ? textChannels : []}
                     selectable
                     onSelect={(e) => {
-                        joinRoom(e.key); 
+                        joinRoom(e.key);
                     }}
                     selectedKeys={Array.isArray(textChannels) && textChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}
                 />
@@ -45,7 +50,7 @@ const ChannelList = () => {
                     mode="inline"
                     items={Array.isArray(voiceChannels) ? voiceChannels : []}
                     selectable
-                    onSelect={(e) => {joinRoom(e.key); }}
+                    onSelect={(e) => { joinRoom(e.key); }}
                     selectedKeys={Array.isArray(voiceChannels) && voiceChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}
                 />
             )
