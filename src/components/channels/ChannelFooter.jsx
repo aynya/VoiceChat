@@ -9,7 +9,7 @@ import {
     AudioMutedOutlined
 } from '@ant-design/icons';
 import useRoomStore from '../../store/roomStore';
-
+import useUserStore from '../../store/userStore';
 import useSocketStore from '../../store/socketStore';
 
 const ChannelFooter = () => {
@@ -18,9 +18,11 @@ const ChannelFooter = () => {
     const handleCreate = useRoomStore((state) => state.handleCreate);
     const handleExit = useRoomStore((state) => state.handleExit);
     const handleLogout = useRoomStore((state) => state.handleLogout);
+    const user = useUserStore((state) => state.user);
     const [isSpeaking, setIsSpeaking] = useState(false);
+    
 
-    const {roomId, localAudioStream, remoteAudioStream, closeLocalAudioStream, initLocalAudioStream } = useSocketStore();
+    const {roomId, localAudioStream, remoteAudioStream} = useSocketStore();
 
     useEffect(() => {
         setIsSpeaking(false)
@@ -146,7 +148,7 @@ const ChannelFooter = () => {
                         ]
                     }}
                 >
-                    <Avatar size={40}>
+                    <Avatar size={40} src={user?.avatar}>
                         <UserOutlined />
                     </Avatar>
                 </Dropdown>

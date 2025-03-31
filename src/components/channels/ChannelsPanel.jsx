@@ -30,7 +30,7 @@ const ChannelsPanel = () => {
         setUser({
             id: myId,
             username: Math.random().toString(36).substring(7),
-            avatar: 'https://xsgames.co/randomusers/assets/avatars/pixel/31.jpg',
+            avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random().toString(36).substring(7)}`,
         })
     }, [myId, setUser])
 
