@@ -71,7 +71,6 @@ const TextChannel = forwardRef((_, ref) => {
   const [inputValue, setInputValue] = useState('');
   const messageListRef = useRef(null); // 新增ref
 
-  const currentRoom = useRoomStore((state) => state.currentRoom);
   // const messages = currentRoom?.messages || [];
   // const sendMessage = useMessageStore((state) => state.sendMessage);
   const isInRoom = useRoomStore((state) => state.isInRoom);

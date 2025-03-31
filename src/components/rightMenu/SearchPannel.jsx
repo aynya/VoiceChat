@@ -4,23 +4,22 @@ import { Input, Divider, List, Avatar } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 import './search.css';
-import useMessageStore from "../../store/messageStore";
-import useRoomStore from "../../store/roomStore";
+import useSocketStore from "../../store/socketStore";
 
 
 // 搜索面板组件
 const SearchPanel = ({ onMessageClick }) => {
-    const currentRoom = useRoomStore((state) => state.currentRoom);
+    const messages = useSocketStore(state => state.messages);
+    console.log(messages)
     const [searchKeyword, setSearchKeyword] = useState('');
     const onSearchChange = (e) => {
         setSearchKeyword(e.target.value);
     };
     const filteredMessages = useMemo(() => {
-        const messages = currentRoom?.messages || [];
         return messages.filter(msg =>
             msg.content.toLowerCase().includes(searchKeyword.toLowerCase())
         );
-    }, [currentRoom?.messages, searchKeyword]);
+    }, [searchKeyword, messages]);
 
     return (
         <div style={{ padding: '16px' }}>
@@ -39,7 +38,7 @@ const SearchPanel = ({ onMessageClick }) => {
                 renderItem={(item) => (
                     <List.Item
                         className='search-result-item'
-                        onClick={() => onMessageClick(item.id)}
+                        onClick={() => {onMessageClick(item.id); }}
                     >
                         <div className="message-preview">
                             <Avatar src={item.avatar} size="small" />

@@ -4,7 +4,6 @@ const { Sider } = Layout;
 import { TeamOutlined, UserOutlined } from '@ant-design/icons';
 import React from 'react';
 import './friend.css';
-import useRoomStore from '../../store/roomStore';
 import useSocketStore from '../../store/socketStore';
 
 

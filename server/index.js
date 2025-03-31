@@ -162,7 +162,7 @@ io.on('connection', (socket) => {
     const roomUsers = Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(id => ({
       id,
       avatar: "https://avatars.githubusercontent.com/u/1014730?v=4", // 默认头像
-      username: id, // 使用 ID 作为用户名
+      username: 'ay', // 使用 ID 作为用户名
     }));
     // 发送房间中的用户列表给当前用户
     socket.emit('room-users', { roomId, users: roomUsers });

@@ -50,10 +50,10 @@ const useSocketStore = create((set, get) => ({
     if (message.trim()) {
       socket.emit('chat message', {
         type: 'user',
-        username: myId,
+        username: 'ay',
         avatar: "https://avatars.githubusercontent.com/u/1014730?v=4",
         content: message,
-        timestamp: Date.now(),
+        timestamp: new Date().toLocaleTimeString(),
       });
       set({ message: '' });
     }
@@ -149,7 +149,6 @@ const useSocketStore = create((set, get) => ({
 
   // 监听 Socket 事件
   setupSocketListeners: () => {
-    const { messages } = get();
     socket.on('myId', (id) => { set({ myId: id }); });
     // 用户加入房间后，接收房间中的用户列表
     socket.on('room-users', ({roomId, users}) => {
@@ -159,7 +158,7 @@ const useSocketStore = create((set, get) => ({
       set((state) => ({
         messages: [...state.messages, {
           ...msg,
-          id: messages.length + 1
+          id: state.messages.length + 1
         }]
       }))
     );
@@ -167,7 +166,7 @@ const useSocketStore = create((set, get) => ({
       const newUser = {
         id: userId,
         avatar: "https://avatars.githubusercontent.com/u/1014730?v=4",
-        username: userId,
+        username: 'ay',
       };
       set((state) => ({
         users: [...state.users, newUser],
