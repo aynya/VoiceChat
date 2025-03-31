@@ -69,12 +69,7 @@ const SystemMessage = ({ content }) => (
 const TextChannel = forwardRef((_, ref) => {
   const [inputValue, setInputValue] = useState('');
   const messageListRef = useRef(null); // 新增ref
-
-  // const messages = currentRoom?.messages || [];
-  // const sendMessage = useMessageStore((state) => state.sendMessage);
   const isInRoom = useRoomStore((state) => state.isInRoom);
-  // const fetchMessages = useMessageStore((state) => state.fetchMessages);
-  // const fetchRooms = useRoomStore((state) => state.fetchRooms);
 
 
   const messages = useSocketStore((state) => state.messages);
@@ -116,8 +111,6 @@ const TextChannel = forwardRef((_, ref) => {
   const handleSend = async () => {
     if (!inputValue.trim()) return;
     sendMessage(inputValue);
-    // await fetchMessages(currentRoom.id);
-    // await fetchRooms();
     setInputValue('');
   };
   return (

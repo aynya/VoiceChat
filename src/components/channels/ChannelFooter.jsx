@@ -24,6 +24,8 @@ const ChannelFooter = () => {
 
     const {roomId, localAudioStream, remoteAudioStream} = useSocketStore();
 
+    console.log(localAudioStream, remoteAudioStream)
+
     useEffect(() => {
         setIsSpeaking(false)
     }, [roomId]);

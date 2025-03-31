@@ -3,8 +3,6 @@ import { Menu, Collapse } from 'antd';
 import { MessageOutlined, TeamOutlined } from '@ant-design/icons';
 import useRoomStore from '../../store/roomStore'
 
-import useSocketStore from '../../store/socketStore';
-
 const ChannelList = () => {
 
     const textChannels = useRoomStore((state) => state.rooms).filter((room) => room.type === 'text')
@@ -13,10 +11,6 @@ const ChannelList = () => {
     const joinRoom = useRoomStore((state) => state.joinRoom)
     const fetchRooms = useRoomStore((state) => state.fetchRooms)
     
-    const jRoom = useSocketStore((state) => state.joinRoom)
-    const roomId = useSocketStore((state) => state.roomId)
-    const leaveRoom = useSocketStore((state) => state.leaveRoom)
-    const setRoomId = useSocketStore((state) => state.setRoomId)
 
     useEffect(() => {
         const init = async () => {

@@ -201,7 +201,7 @@ const useRoomStore = create((set) => ({
         const { currentStep } = useRoomStore.getState();
         if (currentStep === ChannelStep.SELECT_ACTION) {
             set(() => ({
-                currentStep: ChannelStep.CREATE_NAME,
+                currentStep: ChannelStep.CREATE_TYPE,
             }))
         } else if (currentStep === ChannelStep.CREATE_TYPE) {
             set(() => ({
