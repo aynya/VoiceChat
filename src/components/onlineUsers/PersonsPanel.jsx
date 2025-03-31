@@ -14,6 +14,7 @@ const PersonsPanel = () => {
     // console.log(currentRoom)
     // const onlineUsers = currentRoom?.users || [];
     const users = useSocketStore(state => state.users);
+    console.log(users)
     return (
     <Sider
         width={240}

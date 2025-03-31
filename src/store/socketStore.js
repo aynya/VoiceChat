@@ -1,6 +1,7 @@
 // store.js
 import { create } from 'zustand';
 import io from 'socket.io-client';
+import useUserStore from './userStore';
 
 const socket = io('http://localhost:3001', {
   transports: ['websocket'],
@@ -23,8 +24,10 @@ const useSocketStore = create((set, get) => ({
 
   // 加入房间
   joinRoom: (roomId) => {
+    const user = useUserStore.getState().user;
+    console.log(user)
     if (roomId.trim()) {
-      socket.emit('join-room', roomId.trim());
+      socket.emit('join-room', roomId.trim(), user);
     }
   },
 
@@ -46,12 +49,12 @@ const useSocketStore = create((set, get) => ({
 
   // 发送消息
   sendMessage: (message) => {
-    const { myId } = get();
+    const user = useUserStore.getState().user;
     if (message.trim()) {
       socket.emit('chat message', {
         type: 'user',
-        username: 'ay',
-        avatar: "https://avatars.githubusercontent.com/u/1014730?v=4",
+        username: user.username,
+        avatar: user.avatar,
         content: message,
         timestamp: new Date().toLocaleTimeString(),
       });
@@ -162,16 +165,12 @@ const useSocketStore = create((set, get) => ({
         }]
       }))
     );
-    socket.on('user-connected', (userId) => {
-      const newUser = {
-        id: userId,
-        avatar: "https://avatars.githubusercontent.com/u/1014730?v=4",
-        username: 'ay',
-      };
+    socket.on('user-connected', (user) => {
+      const newUser = user;
       set((state) => ({
         users: [...state.users, newUser],
       }));
-      get().createPeerConnection(userId, true)
+      get().createPeerConnection(user.id, true)
     });
     socket.on('user-disconnected', (userId) => {
       const { peersRef } = get();

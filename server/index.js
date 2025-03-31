@@ -151,31 +151,37 @@ const io = require("socket.io")(server, {
   }
 });
 
+let usersMap = new Map();
+
 io.on('connection', (socket) => {
   console.log(`用户 ${socket.id} 已连接`);
+  socket.emit('myId', socket.id); // 发送自己的ID
 
   // 加入房间
-  socket.on('join-room', (roomId) => {
+  socket.on('join-room', (roomId, user) => {
     socket.join(roomId); // 加入指定房间
     socket.roomId = roomId; // 存储房间号
-    // 获取当前房间的所有用户
-    const roomUsers = Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(id => ({
-      id,
-      avatar: "https://avatars.githubusercontent.com/u/1014730?v=4", // 默认头像
-      username: 'ay', // 使用 ID 作为用户名
-    }));
+    usersMap.set(socket.id, user);
+    // // 获取当前房间的所有用户
+    // const roomUsers = Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(id => ({
+    //   id,
+    //   avatar: "https://avatars.githubusercontent.com/u/1014730?v=4", // 默认头像
+    //   username: 'ay', // 使用 ID 作为用户名
+    // }));
+    const roomUsers = Array.from(io.sockets.adapter.rooms.get(roomId) || []).map(id => (usersMap.get(id)))
     // 发送房间中的用户列表给当前用户
     socket.emit('room-users', { roomId, users: roomUsers });
     socket.emit('myId', socket.id); // 发送自己的ID
     console.log(`用户 ${socket.id} 加入房间 ${roomId}`);
     console.log(`${roomId}房间中有 ${io.sockets.adapter.rooms.get(roomId).size} 个成员`);
     // 通知房间内其他用户有新成员加入
-    socket.to(roomId).emit('user-connected', socket.id);
+    socket.to(roomId).emit('user-connected', user);
   });
 
   // 用户离开房间
   socket.on('leave-room', (roomId) => {
     console.log(roomId)
+    usersMap.delete(socket.id);
     if (socket.roomId) {
       console.log(`用户 ${socket.id} 离开房间 ${roomId}`);
       socket.leave(roomId);
@@ -196,6 +202,9 @@ io.on('connection', (socket) => {
 
   // 用户断开时通知房间
   socket.on('disconnect', () => {
+    if(usersMap.has(socket.id)) {
+      usersMap.delete(socket.id);
+    }
     if (socket.roomId) {
       console.log(`用户 ${socket.id} 已断开连接`);
       socket.to(socket.roomId).emit('user-disconnected', socket.id);

@@ -5,12 +5,14 @@ import CreateChannelModal from './CreateChannelModal';
 import ChannelFooter from './ChannelFooter';
 import Right from '../rightMenu/Right';
 import useSocketStore from '../../store/socketStore';
+import useUserStore from '../../store/userStore';
 const { Sider } = Layout;
 
 
 const ChannelsPanel = () => {
-    const { initLocalAudioStream, setupSocketListeners } = useSocketStore();
-    useEffect(() => {
+    const { initLocalAudioStream, setupSocketListeners, myId } = useSocketStore();
+    const { setUser } = useUserStore();
+    useEffect(() => { // 初始化 本地音频流和 Socket 监听器
         console.log('App组件加载');
 
         // 初始化本地音频流
@@ -22,7 +24,15 @@ const ChannelsPanel = () => {
         return () => {
             cleanupSocketListeners(); // 清理监听器
         };
-    }, []);
+    }, [initLocalAudioStream, setupSocketListeners]);
+
+    useEffect(() => { // 设置用户信息
+        setUser({
+            id: myId,
+            username: Math.random().toString(36).substring(7),
+            avatar: 'https://xsgames.co/randomusers/assets/avatars/pixel/31.jpg',
+        })
+    }, [myId, setUser])
 
     return (
         <Layout hasSider style={{ height: '100vh' }}>
