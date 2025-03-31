@@ -17,7 +17,9 @@ const ChannelList = () => {
             await fetchRooms()
         }
         init()
+        setInterval(init, 10000) // 每隔10秒刷新一次房间列表
     }, [fetchRooms])
+
 
     const items = [
         {
