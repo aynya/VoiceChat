@@ -10,6 +10,7 @@ const useSocketStore = create((set, get) => ({
   // 状态
   messages: [],
   message: '',
+  users: [],
   myId: '',
   roomId: '',
   setRoomId: (roomId) => set({ roomId }),
@@ -38,13 +39,14 @@ const useSocketStore = create((set, get) => ({
         message: '',
         roomId: '',
         peersRef: {},
+        users: [], // 清空用户列表
       });
     }
   },
 
   // 发送消息
   sendMessage: (message) => {
-    const { myId} = get();
+    const { myId } = get();
     if (message.trim()) {
       socket.emit('chat message', {
         type: 'user',
@@ -148,16 +150,30 @@ const useSocketStore = create((set, get) => ({
   // 监听 Socket 事件
   setupSocketListeners: () => {
     const { messages } = get();
-    socket.on('myId', (id) => set({ myId: id }));
+    socket.on('myId', (id) => { set({ myId: id }); });
+    // 用户加入房间后，接收房间中的用户列表
+    socket.on('room-users', ({roomId, users}) => {
+      set({roomId, users})
+    })
     socket.on('chat message', (msg) =>
-      set((state) => ({ messages: [...state.messages, {
-        ...msg, 
-        id: messages.length + 1
-      }] }))
+      set((state) => ({
+        messages: [...state.messages, {
+          ...msg,
+          id: messages.length + 1
+        }]
+      }))
     );
-    socket.on('user-connected', (userId) =>
+    socket.on('user-connected', (userId) => {
+      const newUser = {
+        id: userId,
+        avatar: "https://avatars.githubusercontent.com/u/1014730?v=4",
+        username: userId,
+      };
+      set((state) => ({
+        users: [...state.users, newUser],
+      }));
       get().createPeerConnection(userId, true)
-    );
+    });
     socket.on('user-disconnected', (userId) => {
       const { peersRef } = get();
       if (peersRef[userId]) {
@@ -165,6 +181,7 @@ const useSocketStore = create((set, get) => ({
         delete peersRef[userId];
         set((state) => ({
           peersRef: { ...state.peersRef },
+          users: state.users.filter((user) => user.id !== userId)
         }));
       }
     });
@@ -176,6 +193,7 @@ const useSocketStore = create((set, get) => ({
       socket.off('user-connected');
       socket.off('user-disconnected');
       socket.off('signal');
+      socket.off('room-users');
     };
   },
 }));
