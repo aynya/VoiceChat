@@ -2,10 +2,23 @@
 import { create } from 'zustand';
 import io from 'socket.io-client';
 import useUserStore from './userStore';
+import { messageService } from '../services/messageService';
 
 const socket = io('http://localhost:3001', {
   transports: ['websocket'],
 });
+
+const  formatDateTime = (isoString) => {
+  const date = new Date(isoString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 const useSocketStore = create((set, get) => ({
   // 状态
@@ -23,12 +36,17 @@ const useSocketStore = create((set, get) => ({
   setMessage: (newMessage) => set({ message: newMessage }),
 
   // 加入房间
-  joinRoom: (roomId) => {
+  joinRoom: async (roomId) => {
     const user = useUserStore.getState().user;
     console.log(user)
     if (roomId.trim()) {
       socket.emit('join-room', roomId.trim(), user);
       set({ roomId });
+      const messages = await messageService.getChannelMessages(roomId);
+      set({ messages: messages.map((message) => ({
+        ...message,
+        timestamp: formatDateTime(message.timestamp)
+      }))})
     }
   },
 
@@ -52,12 +70,13 @@ const useSocketStore = create((set, get) => ({
   sendMessage: (message) => {
     const user = useUserStore.getState().user;
     if (message.trim()) {
+      const now = new Date();
       socket.emit('chat message', {
         type: 'user',
         username: user.username,
         avatar: user.avatar,
         content: message,
-        timestamp: new Date().toLocaleTimeString(),
+        timestamp: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
       });
       set({ message: '' });
     }

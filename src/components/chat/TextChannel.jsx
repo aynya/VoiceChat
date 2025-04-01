@@ -144,11 +144,11 @@ const TextChannel = forwardRef((_, ref) => {
                   message={item}
                 />
               )}
-              {item.id === 2 && (
+              {/* {item.id === 2 && (
                 <Divider orientation="center" style={{ fontSize: '0.8rem' }}>
                   今天
                 </Divider>
-              )}
+              )} */}
             </div>
           )}
         />

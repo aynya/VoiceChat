@@ -7,22 +7,20 @@ const baseUrl = 'http://localhost:3001/api'
 
 export const messageService = {
     // 获取频道消息历史
-    getChannelMessages: async (channelId) => {
-        const response = await axios.get(`${baseUrl}/rooms`)
-        // 之后用后端优化这个查询
-        const currentRoom = response.data.find(room => room.key === channelId)
-        console.log("获取的messages", currentRoom.messages)
-        return currentRoom.messages
+    getChannelMessages: async (roomId) => {
+        const response = await axios.get(`${baseUrl}/rooms/${roomId}/messages`)  
+        return response.data;
     },
 
     // 发送消息
     sendMessage: async (channelId, message, user) => {
+        const now = new Date();
         const newMessage = {
             type: 'user',
             username: user.username,
             avatar: user.avatar,
             content: message.content,
-            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            timestamp: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
         }
         const response = await axios.post(`${baseUrl}/rooms/${channelId}/messages`, newMessage)
 
