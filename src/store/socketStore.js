@@ -8,7 +8,7 @@ const socket = io('http://localhost:3001', {
   transports: ['websocket'],
 });
 
-const  formatDateTime = (isoString) => {
+const  formatDateTime = (isoString) => { // 格式化时间戳为 YYYY-MM-DD HH:mm:ss
   const date = new Date(isoString);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');

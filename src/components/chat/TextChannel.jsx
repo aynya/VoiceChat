@@ -80,6 +80,12 @@ const TextChannel = forwardRef((_, ref) => {
   const postMessage = useMessageStore((state) => state.sendMessage);
   
 
+  const scrollToBottom = () => { // 滚动到底部
+    if (messageListRef.current) {
+      const container = messageListRef.current;
+      container.scrollTop = 0;
+    }
+  }
 
   // 修改后的消息跳转处理
   const handleMessageJump = (messageId) => {
@@ -117,6 +123,7 @@ const TextChannel = forwardRef((_, ref) => {
     postMessage(roomId, inputValue)
     sendMessage(inputValue);
     setInputValue('');
+    scrollToBottom(); // 滚动到底部
   };
   return (
     <Layout style={{ height: '100vh', backgroundColor: '#fff', color: '#fff' }}>
