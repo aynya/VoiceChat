@@ -184,10 +184,10 @@ app.post(`/api/rooms`, async (request, response) => {
     return response.status(400).json({ error: 'content missing' });
   }
 
-  const { label, type, id } = body;
+  const { label, type, id, uid } = body;
 
   try {
-    const [result] = await db.query('INSERT INTO rooms (label, type, id) VALUES (?, ?, ?)', [label, type, id]);
+    const [result] = await db.query('INSERT INTO rooms (label, type, id, uid) VALUES (?, ?, ?, ?)', [label, type, id, uid]);
     response.json({ id: result.insertId, ...body });
   } catch (error) {
     console.error(error);

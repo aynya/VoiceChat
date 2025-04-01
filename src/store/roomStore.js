@@ -36,21 +36,21 @@ const useRoomStore = create((set) => ({
     },
 
     // 创建新房间
-    createRoom: async (roomId, type) => {
+    createRoom: async (roomName, type) => {
         try {
             const { checkRoomExist, joinRoom } = useRoomStore.getState();
 
-            if (checkRoomExist(roomId)) {
+            if (checkRoomExist(roomName)) {
                 message.error('房间已存在');
                 throw new Error('房间已存在');
             }
-            const newRoom = await channelService.createChannel(roomId, type);
+            const newRoom = await channelService.createChannel(roomName, type);
 
             set((state) => ({
                 rooms: [...state.rooms, newRoom]
             }));
             // 创建后加入房间
-            await joinRoom(roomId);
+            await joinRoom(newRoom.id);
             return true;
         } catch (error) {
             console.error('创建房间失败:', error);
@@ -63,7 +63,7 @@ const useRoomStore = create((set) => ({
             const { user } = useUserStore.getState();
             const { exitRoom, rooms, isInRoom } = useRoomStore.getState();
             const {joinRoom, setRoomId, localAudioStream } = useSocketStore.getState();
-            // console.log(rooms)
+            console.log(roomId)
             const room = rooms.find(room => room.id === roomId);
             if (!room) {
                 message.error('房间不存在');
@@ -150,7 +150,7 @@ const useRoomStore = create((set) => ({
     handleConfirm: async () => {
         const { currentStep, roomId, createRoom, selectedType, handleCancel, joinRoom } = useRoomStore.getState();
         if (currentStep === ChannelStep.CREATE_NAME) {
-            if (!roomId.trim()) return message.error('请输入房间号')
+            if (!roomId.trim()) return message.error('请输入房间名')
 
             try {
                 await createRoom(roomId, selectedType);
@@ -161,7 +161,7 @@ const useRoomStore = create((set) => ({
                 console.log('创建频道失败', error)
             }
         } else if (currentStep === ChannelStep.JOIN_NAME) {
-            if (!roomId.trim()) return message.error('请输入房间号');
+            if (!roomId.trim()) return message.error('请输入房间名');
             try {
                 const success = await joinRoom(roomId);
                 if (success) {

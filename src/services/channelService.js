@@ -1,5 +1,6 @@
 
 import axios from 'axios';
+import { nanoid } from 'nanoid';
 
 // TODO: 需要与后端API集成
 // 目前使用模拟数据，后续需要替换为实际的API调用
@@ -31,19 +32,21 @@ export const channelService = {
         return response.data;
     },
 
-    // 创建新频道
-    createChannel: async (roomId, type) => {
+    // 创建新房间
+    createChannel: async (roomName, type) => {
         // TODO: 替换为实际的API调用
+        const uuid = nanoid(8);
         const newRoom = {
-            id: roomId,
-            label: roomId,
+            id: uuid,
+            label: roomName,
+            uid: uuid,
             type: type,
             users: [],
             messages: [],
-            key: roomId
+            key: uuid
         }
-        await axios.post(`${baseUrl}/rooms`, newRoom)
-        return newRoom;
+        const res = await axios.post(`${baseUrl}/rooms`, newRoom)
+        return res.data;
     },
 
     // 加入频道

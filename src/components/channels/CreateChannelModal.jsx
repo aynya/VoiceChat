@@ -57,11 +57,11 @@ const CreateChannelModal = (
             )}
             {[ChannelStep.CREATE_NAME, ChannelStep.JOIN_NAME].includes(currentStep) && (
                 <Form>
-                    <Form.Item label="房间号">
+                    <Form.Item label="房间">
                         <Input
                             value={roomId}
                             onChange={(e) => setRoomId(e.target.value)}
-                            placeholder="请输入房间号"
+                            placeholder= {currentStep === ChannelStep.CREATE_NAME ? "请输入房间名" : "请输入房间号"}
                             style={{
                                 borderRadius: 4,
                                 padding: '4px 8px',
