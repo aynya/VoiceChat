@@ -61,7 +61,7 @@ const CreateChannelModal = (
                         <Input
                             value={roomId}
                             onChange={(e) => setRoomId(e.target.value)}
-                            placeholder= {currentStep === ChannelStep.CREATE_NAME ? "请输入房间名" : "请输入房间号"}
+                            placeholder= {currentStep === ChannelStep.CREATE_NAME ? "请输入房间名" : "请输入房间UID"}
                             style={{
                                 borderRadius: 4,
                                 padding: '4px 8px',

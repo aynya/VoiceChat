@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Avatar, Dropdown, Tooltip } from 'antd';
+import { Button, Avatar, Dropdown, Tooltip, message } from 'antd';
 import {
     UserOutlined,
     PlusOutlined,
     CloseOutlined,
     CheckCircleOutlined,
     AudioOutlined,
-    AudioMutedOutlined
+    AudioMutedOutlined,
+    CopyOutlined
 } from '@ant-design/icons';
 import useRoomStore from '../../store/roomStore';
 import useUserStore from '../../store/userStore';
@@ -20,9 +21,9 @@ const ChannelFooter = () => {
     const handleLogout = useRoomStore((state) => state.handleLogout);
     const user = useUserStore((state) => state.user);
     const [isSpeaking, setIsSpeaking] = useState(false);
-    
 
-    const {roomId, localAudioStream, remoteAudioStream} = useSocketStore();
+
+    const { roomId, localAudioStream, remoteAudioStream } = useSocketStore();
 
     console.log(localAudioStream, remoteAudioStream)
 
@@ -67,6 +68,18 @@ const ChannelFooter = () => {
         }
     };
 
+    // 把房间ID复制到剪切板
+    const handleCopyRoomId = () => {
+        if (currentRoom?.id) {
+            navigator.clipboard.writeText(currentRoom.id).then(() => {
+                message.success(`已复制房间 ID: ${currentRoom.id}`);
+            }).catch((err) => {
+                console.error('复制失败:', err);
+                message.error('复制失败，请重试');
+            });
+        }
+    }
+
     // console.log(currentRoom);
     return (
         <div style={{
@@ -97,6 +110,7 @@ const ChannelFooter = () => {
                     }}>
                         <CheckCircleOutlined style={{ color: '#52c41a', marginRight: 4 }} />
                         当前房间：{currentRoom?.id}
+
                     </div>
                 </Tooltip>
             )}
@@ -133,6 +147,21 @@ const ChannelFooter = () => {
                                 size="large"
                                 onClick={handleVoiceToggle}
                                 danger={isSpeaking}
+                            />
+                            <Button
+                                type="default" // 使用默认类型，避免过于突兀
+                                shape="circle"
+                                icon={<CopyOutlined style={{ color: '#52c41a' }} />} // 设置图标的颜色
+                                size="large"
+                                onClick={handleCopyRoomId}
+                                style={{
+                                    border: '2px solid #52c41a', // 添加边框以增强视觉效果
+                                    color: '#52c41a', // 设置文字颜色（如果有）
+                                    backgroundColor: '#ffffff', // 设置背景颜色为白色
+                                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', // 添加轻微阴影
+                                    transition: 'all 0.3s ease', // 添加平滑过渡效果
+                                    marginLeft: 8 // 调整与左侧内容的间距
+                                }}
                             />
                         </>
                     )}
