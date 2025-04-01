@@ -1,6 +1,5 @@
 
 import axios from 'axios';
-import { defaultChannels } from '../components/channels/types';
 
 // TODO: 需要与后端API集成
 // 目前使用模拟数据，后续需要替换为实际的API调用

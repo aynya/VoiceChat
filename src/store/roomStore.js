@@ -94,7 +94,7 @@ const useRoomStore = create((set) => ({
                 isInRoom: true,
                 currentRoom: {
                     ...room,
-                    users: [...room.users, user]
+                    users: 'users' in room ? room.users : []
                 }
             }));
 

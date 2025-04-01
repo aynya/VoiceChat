@@ -33,10 +33,11 @@ const ChannelList = () => {
             children: (
                 <Menu
                     mode="inline"
-                    items={Array.isArray(textChannels) ? textChannels : []}
+                    items={Array.isArray(textChannels) ? textChannels.map(textChannel => ({...textChannel, key: textChannel.id })) : []}
                     selectable
                     onSelect={(e) => {
                         joinRoom(e.key);
+                        console.log("选择的", e.key)
                     }}
                     selectedKeys={Array.isArray(textChannels) && textChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}
                 />
@@ -48,7 +49,7 @@ const ChannelList = () => {
             children: (
                 <Menu
                     mode="inline"
-                    items={Array.isArray(voiceChannels) ? voiceChannels : []}
+                    items={Array.isArray(voiceChannels) ? voiceChannels.map(voiceChannel => ({...voiceChannel, key: voiceChannel.id })) : []}
                     selectable
                     onSelect={(e) => { joinRoom(e.key); }}
                     selectedKeys={Array.isArray(voiceChannels) && voiceChannels.some((c) => c.id === currentRoom?.id) ? [currentRoom?.id] : []}

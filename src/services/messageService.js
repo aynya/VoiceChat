@@ -17,20 +17,12 @@ export const messageService = {
 
     // 发送消息
     sendMessage: async (channelId, message, user) => {
-        // TODO: 替换为实际的API调用
-        // 示例：const response = await fetch(`/api/channels/${channelId}/messages`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(message)
-        // });
-        // return await response.json();
-        console.log(4320840304)
         const newMessage = {
             type: 'user',
             username: user.username,
             avatar: user.avatar,
             content: message.content,
-            timestamp: new Date().toLocaleTimeString(),
+            timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
         }
         const response = await axios.post(`${baseUrl}/rooms/${channelId}/messages`, newMessage)
 

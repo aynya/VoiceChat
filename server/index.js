@@ -5,141 +5,19 @@ const cors = require('cors')
 
 const server = http.createServer(app)
 
-let rooms = [
-  {
-    "key": "1",
-    "label": "1",
-    "type": "text",
-    "users": [
-      {
-        "id": "1",
-        "username": "张三",
-        "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-      },
-      {
-        "id": "2",
-        "username": "李四",
-        "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-      },
-      {
-        "id": "3",
-        "username": "王五",
-        "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-      }
-    ],
-    "messages": [
-      {
-        "id": "1",
-        "type": "system",
-        "content": "欢迎来到聊天室",
-        "timestamp": "2023-07-01 12:00:00"
-      },
-      {
-        "id": "2",
-        "type": "user",
-        "username": "用户A",
-        "avatar": "https://example.com/avatar1.png",
-        "content": "大家好",
-        "timestamp": "2023-07-01 12:01:00"
-      },
-      {
-        "id": "3",
-        "type": "user",
-        "username": "用户B",
-        "avatar": "https://example.com/avatar2.png",
-        "content": "我是用户B",
-        "timestamp": "2023-07-01 12:02:00"
-      }
-    ],
-    "id": "1"
-  },
-  {
-    "key": "2",
-    "label": "2",
-    "type": "text",
-    "users": [
-      {
-        "id": "4",
-        "username": "赵六",
-        "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-      },
-      {
-        "id": "5",
-        "username": "钱七",
-        "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-      }
-    ],
-    "messages": [
-      {
-        "id": "4",
-        "type": "system",
-        "content": "欢迎来到聊天室2",
-        "timestamp": "2023-07-02 12:00:00"
-      },
-      {
-        "id": "5",
-        "type": "user",
-        "username": "用户C",
-        "avatar": "https://example.com/avatar3.png",
-        "content": "这是另一个聊天室",
-        "timestamp": "2023-07-02 12:01:00"
-      }
-    ],
-    "id": "2"
-  },
-  {
-    "key": "3",
-    "label": "3",
-    "type": "voice",
-    "users": [
-      {
-        "id": "6",
-        "username": "孙八",
-        "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-      }
-    ],
-    "messages": [
-      {
-        "id": "6",
-        "type": "system",
-        "content": "欢迎来到聊天室3",
-        "timestamp": "2023-07-03 12:00:00"
-      },
-      {
-        "id": "7",
-        "type": "user",
-        "username": "用户D",
-        "avatar": "https://example.com/avatar4.png",
-        "content": "这是第三个聊天室",
-        "timestamp": "2023-07-03 12:01:00"
-      }
-    ],
-    "id": "3"
-  },
-  {
-    "id": "4",
-    "key": "4",
-    "label": "4",
-    "type": "text",
-    "users": [],
-    "messages": []
-  }
-]
+// 引入 MySQL 模块
+const mysql = require('mysql2/promise');
 
-// let users = [
-//     {
-//         "id": 1,
-//         "roomId": 1,
-//         "username": "张三",
-//         "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-//     },
-//     {
-//         "id": 2,
-//         "roomId": 1,
-//         "username": "李四",
-//         "avatar": "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnV"
-//     }
-// ]
+// 创建数据库连接池
+const db = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '540819228', // 替换为你的数据库密码
+  database: 'voice_chat',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
 
 app.use(cors())
 app.use(express.json())
@@ -195,13 +73,18 @@ io.on('connection', (socket) => {
   });
 
   // 用户断开时通知房间
-  socket.on('disconnect', () => {
-    if(usersMap.has(socket.id)) {
-      usersMap.delete(socket.id);
-    }
-    if (socket.roomId) {
-      console.log(`用户 ${socket.id} 已断开连接`);
-      socket.to(socket.roomId).emit('user-disconnected', socket.id);
+  socket.on('disconnect', async () => {
+    try {
+      await db.query('DELETE FROM users WHERE id = ?', [socket.id]);
+      if(usersMap.has(socket.id)) {
+        usersMap.delete(socket.id);
+      }
+      if (socket.roomId) {
+        console.log(`用户 ${socket.id} 已断开连接`);
+        socket.to(socket.roomId).emit('user-disconnected', socket.id);
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 });
@@ -210,141 +93,126 @@ app.get('/', (request, response) => {
   response.send(`<h1>hello<h1>`)
 })
 
-app.get(`/api/rooms`, (request, response) => { // 获取所有房间
-  response.json(rooms)
-})
+// 获取所有房间
+app.get(`/api/rooms`, async (request, response) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM rooms');
+    response.json(rows);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Database error' });
+  }
+});
 
 // 获取对应房间的用户
-app.get(`/api/rooms/:roomId/users`, (request, response) => {
-  const roomId = request.params.roomId
-  const room = rooms.find(room => room.id === roomId)
-
-  if (!room) {
-    return response.status(404).json({
-      error: 'room not found'
-    })
+app.get(`/api/rooms/:roomId/users`, async (request, response) => {
+  const roomId = request.params.roomId;
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE room_id = ?', [roomId]);
+    response.json(rows);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Database error' });
   }
-  response.json(room.users);
-})
+});
 
 // 用户加入房间
-app.post(`/api/rooms/:roomId/users`, (request, response) => {
-  const body = request.body
-  const roomId = (request.params.roomId)
-  const room = rooms.find(room => room.id === roomId)
-  if (!room) {
-    return response.status(404).json({
-      error: 'room not found'
-    })
+app.post(`/api/rooms/:roomId/users`, async (request, response) => {
+  const body = request.body;
+  const roomId = request.params.roomId;
+  const { id, username, avatar } = body;
+
+  try {
+    await db.query('INSERT INTO users (id, username, avatar, room_id) VALUES (?, ?, ?, ?)', [id, username, avatar, roomId]);
+    response.json({ id, username, avatar });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Database error' });
   }
-  const newUser = {
-    id: body.id,
-    username: body.username,
-    avatar: body.avatar,
-  }
-  // console.log(newUser);
-  room.users = room.users.concat(newUser)
-  response.json(newUser)
-})
+});
 
 // 用户退出房间
-app.delete(`/api/rooms/:roomId/users/:userId`, (request, response) => {
-  const roomId = (request.params.roomId)
-  const room = rooms.find(room => room.id === roomId)
-  if (!room) {
-    return response.status(404).json({
-      error: 'room not found'
-    })
+app.delete(`/api/rooms/:roomId/users/:userId`, async (request, response) => {
+  const roomId = request.params.roomId;
+  const userId = request.params.userId;
+
+  try {
+    await db.query('DELETE FROM users WHERE id = ? AND room_id = ?', [userId, roomId]);
+    response.status(204).end();
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Database error' });
   }
-  // console.log((request.params.userId))
-  room.users = room.users.filter(user => user.id !== (request.params.userId))
-  // console.log(room.users);
-  response.status(204).end()
-})
+});
 
 // 获取对应房间的消息
-app.get(`/api/rooms/:roomId/messages`, (request, response) => {
-  const roomId = (request.params.roomId)
-  const room = rooms.find(room => room.id === roomId)
-  if (!room) {
-    return response.status(404).json({
-      error: 'room not found'
-    })
+app.get(`/api/rooms/:roomId/messages`, async (request, response) => {
+  const roomId = request.params.roomId;
+
+  try {
+    const [rows] = await db.query('SELECT * FROM messages WHERE room_id = ?', [roomId]);
+    response.json(rows);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Database error' });
   }
-  response.json(room.messages)
-})
+});
 
 // 发送消息
-app.post(`/api/rooms/:roomId/messages`, (request, response) => {
-  const body = request.body
-  const roomId = (request.params.roomId)
-  const room = rooms.find(room => room.id === roomId)
-  if (!room) {
-    return response.status(404).json({
-      error: 'room not found'
-    })
+app.post(`/api/rooms/:roomId/messages`, async (request, response) => {
+  const body = request.body;
+  const roomId = request.params.roomId;
+  const { type, username, avatar, content, timestamp } = body;
+
+  try {
+    const [result] = await db.query(
+      'INSERT INTO messages (type, username, avatar, content, timestamp, room_id) VALUES (?, ?, ?, ?, ?, ?)',
+      [type, username, avatar, content, timestamp, roomId]
+    );
+    response.json({ id: result.insertId, ...body });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Database error' });
   }
-  const message = {
-    id: generatMessageId(room),
-    type: body.type,
-    username: body.username,
-    avatar: body.avatar,
-    content: body.content,
-    timestamp: body.timestamp
-  }
-  room.messages = room.messages.concat(message)
-  // console.log(room.messages)
-  response.json(message)
-})
+});
 
-app.get(`/api/rooms/:roomId`, (request, response) => {
-  const roomId = (request.params.roomId)
-  const room = rooms.find(room => room.id === roomId)
-  if (!room) {
-    return response.status(404).json({
-      error: 'room not found'
-    })
-  }
-  response.json(room)
-})
-
-const generatMessageId = (room) => {
-  const maxId = room.messages.length > 0
-    ? Math.max(...room.messages.map(n => n.id))
-    : 0
-  return (maxId + 1) + ''
-}
-
-
-app.post(`/api/rooms`, (request, response) => { // 创建房间
-  const body = request.body
-  console.log(body)
+// 创建房间
+app.post(`/api/rooms`, async (request, response) => {
+  const body = request.body;
 
   if (!body) {
-    return response.status(400).json({ // 客户端错误响应
-      error: 'content missing'
-    })
+    return response.status(400).json({ error: 'content missing' });
   }
 
-  const room = {
-    label: body.label,
-    type: body.type,
-    users: body.users,
-    messages: body.messages,
-    id: body.id,
-    key: body.id,
+  const { label, type, id } = body;
+
+  try {
+    const [result] = await db.query('INSERT INTO rooms (label, type, id) VALUES (?, ?, ?)', [label, type, id]);
+    response.json({ id: result.insertId, ...body });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Database error' });
   }
+});
 
-  rooms = rooms.concat(room)
-
-  response.json(room)
-
+app.get(`/api/rooms/:roomId`, async (request, response) => {
+  const roomId = request.params.roomId;
+  try {
+    const [rows] = await db.query('SELECT * FROM rooms WHERE id = ?', [roomId]);
+    if (rows.length === 0) {
+      return response.status(404).json({
+        error: 'room not found'
+      });
+    }
+    response.json(rows[0]);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: 'Database error' });
+  }
 })
 
+
 const PORT = 3001
-// app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`)
-// })
 server.listen(PORT, () => {
   console.log('服务端运行在:3001');
 });
