@@ -94,8 +94,32 @@ app.get('/', (request, response) => {
 })
 
 // 获取所有房间
-app.get(`/api/rooms`, async (request, response) => {
+app.get('/api/rooms', async (request, response) => {
   try {
+    // 1. 删除用户数为 0 的房间及其相关聊天记录
+    await db.query(`
+      DELETE FROM messages
+      WHERE room_id IN (
+        SELECT id
+        FROM rooms
+        WHERE NOT EXISTS (
+          SELECT 1
+          FROM users
+          WHERE users.room_id = rooms.id
+        )
+      )
+    `);
+
+    await db.query(`
+      DELETE FROM rooms
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM users
+        WHERE users.room_id = rooms.id
+      )
+    `);
+
+    // 2. 查询并返回剩余的房间列表
     const [rows] = await db.query('SELECT * FROM rooms');
     response.json(rows);
   } catch (error) {
