@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import { nanoid } from 'nanoid';
+import { message } from 'antd';
 
 // TODO: 需要与后端API集成
 // 目前使用模拟数据，后续需要替换为实际的API调用
@@ -52,10 +53,19 @@ export const channelService = {
     // 加入频道
     joinChannel: async (roomId, user) => {
         // TODO: 替换为实际的API调用
-        await axios.post(`${baseUrl}/rooms/${roomId}/users`, user)
-        
-        console.log("加入频道", roomId, user)
-        return true;
+        try {
+            await axios.post(`${baseUrl}/rooms/${roomId}/users`, user)
+            console.log("加入频道", roomId, user)
+            return true;
+        } catch (error) {
+            const status = error.response.status;
+            if(status === 409) {
+                message.error('您的账号已在别处使用')
+            }
+            console.log("加入频道失败", error)
+            return false;
+        }
+
     },
 
     // 退出频道

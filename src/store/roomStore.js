@@ -1,4 +1,4 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
 import { message } from 'antd';
 import { channelService } from '../services/channelService';
 import useUserStore from './userStore';
@@ -63,7 +63,7 @@ const useRoomStore = create((set) => ({
         try {
             const { user } = useUserStore.getState();
             const { exitRoom, rooms, isInRoom } = useRoomStore.getState();
-            const {joinRoom, setRoomId, localAudioStream } = useSocketStore.getState();
+            const { joinRoom, setRoomId, localAudioStream } = useSocketStore.getState();
             console.log(roomId)
             const room = rooms.find(room => room.id === roomId);
             if (!room) {
@@ -117,7 +117,7 @@ const useRoomStore = create((set) => ({
                 return;
             }
             await channelService.leaveChannel(roomId, user);
-            
+
             leaveRoom(roomId)
             if (localAudioStream) {
                 const audioTracks = localAudioStream.getAudioTracks();
@@ -128,7 +128,7 @@ const useRoomStore = create((set) => ({
                     console.log('初始化：音频轨道已禁用');
                 }
             }
-            
+
             set(() => ({
                 isInRoom: false,
                 currentRoom: null
@@ -231,7 +231,7 @@ const useRoomStore = create((set) => ({
     handleExit: async () => {
         const { exitRoom } = useRoomStore.getState();
         try {
-            await  exitRoom();
+            await exitRoom();
             message.info('已退出当前房间');
         } catch (error) {
             message.error('退出房间失败');
@@ -242,7 +242,7 @@ const useRoomStore = create((set) => ({
     // 退出登录
     handleLogout: async () => {
         const { handleLogout } = useLoginStore.getState();
-        const {exitRoom} = useRoomStore.getState();
+        const { exitRoom } = useRoomStore.getState();
         await exitRoom() // 退出房间
         handleLogout(); // 退出登录
         message.success('退出登录成功');

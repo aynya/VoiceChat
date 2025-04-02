@@ -150,6 +150,16 @@ app.post(`/api/rooms/:roomId/users`, async (request, response) => {
   const { id, username, avatar } = body;
 
   try {
+
+    const [existingUsers] = await db.query(
+      'SELECT * FROM users WHERE username = ?',
+      [username]
+    );
+    if (existingUsers.length > 0) {
+      // 如果存在同名用户，返回错误提示
+      return response.status(409).json({ error: '您的账号已在别处使用' });
+    }
+
     await db.query('INSERT INTO users (id, username, avatar, room_id) VALUES (?, ?, ?, ?)', [id, username, avatar, roomId]);
     response.json({ id, username, avatar });
   } catch (error) {
