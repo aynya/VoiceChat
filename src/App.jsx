@@ -16,7 +16,7 @@ const App = () => {
       const user = JSON.parse(loggedInUserJSON);
       setLoggedIn(user);
     }
-  }, [])
+  }, [setLoggedIn])
 
 
   return (
