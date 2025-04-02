@@ -38,13 +38,17 @@ const SearchPanel = ({ onMessageClick }) => {
                 renderItem={(item) => (
                     <List.Item
                         className='search-result-item'
-                        onClick={() => {onMessageClick(item.id); }}
+                        onClick={() => { onMessageClick(item.id); }}
                     >
                         <div className="message-preview">
                             <Avatar src={item.avatar} size="small" />
-                            <span className="username">{item.username}</span>
-                            <span className="content">{item.content}</span>
-                            <span className="timestamp">{item.timestamp}</span>
+                            <div className="content-container">
+                                <div className="header">
+                                    <span className="username">{item.username}</span>
+                                    <span className="timestamp">{item.timestamp}</span>
+                                </div>
+                                <p className="content">{item.content}</p>
+                            </div>
                         </div>
                     </List.Item>
                 )}
