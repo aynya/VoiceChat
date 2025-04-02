@@ -12,15 +12,17 @@ import {
 import useRoomStore from '../../store/roomStore';
 import useUserStore from '../../store/userStore';
 import useSocketStore from '../../store/socketStore';
+import { useNavigate } from 'react-router-dom';
 
 const ChannelFooter = () => {
     const isInRoom = useRoomStore((state) => state.isInRoom);
     const currentRoom = useRoomStore((state) => state.currentRoom);
     const handleCreate = useRoomStore((state) => state.handleCreate);
     const handleExit = useRoomStore((state) => state.handleExit);
-    const handleLogout = useRoomStore((state) => state.handleLogout);
     const user = useUserStore((state) => state.user);
     const [isSpeaking, setIsSpeaking] = useState(false);
+    const {handleLogout} = useRoomStore();
+    const navigate = useNavigate();
 
 
     const { roomId, localAudioStream, remoteAudioStream } = useSocketStore();
@@ -67,6 +69,11 @@ const ChannelFooter = () => {
             console.log('停止录音');
         }
     };
+
+    const onLogout = () => {
+        handleLogout();
+        navigate('/');
+    }
 
     // 把房间ID复制到剪切板
     const handleCopyRoomId = () => {
@@ -173,7 +180,7 @@ const ChannelFooter = () => {
                             {
                                 key: 'logout',
                                 label: <span style={{ color: '#ff4d4f' }}>退出登录</span>,
-                                onClick: handleLogout
+                                onClick: onLogout
                             }
                         ]
                     }}

@@ -4,6 +4,7 @@ import { channelService } from '../services/channelService';
 import useUserStore from './userStore';
 import { ChannelStep, ChannelType } from '../components/channels/types';
 import useSocketStore from './socketStore';
+import useLoginStore from './loginStore';
 
 const useRoomStore = create((set) => ({
     rooms: [],
@@ -240,6 +241,10 @@ const useRoomStore = create((set) => ({
 
     // 退出登录
     handleLogout: () => {
+        const { handleLogout } = useLoginStore.getState();
+        const {exitRoom} = useRoomStore.getState();
+        exitRoom() // 退出房间
+        handleLogout(); // 退出登录
         message.success('退出登录成功');
     },
 
