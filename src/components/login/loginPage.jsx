@@ -9,6 +9,7 @@ const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { setLoggedIn } = useLoginStore();
+    const [form] = Form.useForm();
 
     const registerFormRef = useRef(null);
 
@@ -32,6 +33,14 @@ const LoginPage = () => {
         setIsModalVisible(false);
     };
 
+    const validateConfirmPassword = (_, value) => {
+        const password = form.getFieldValue('password');
+        if (value && value !== password) {
+            return Promise.reject(new Error('两次输入的密码不一致！'));
+        }
+        return Promise.resolve();
+    };
+
     const onFinish = async (values) => {
         try {
             const { nickname, password, confirmPassword, avatar } = values;
@@ -48,7 +57,7 @@ const LoginPage = () => {
             }
             setIsModalVisible(false);
         } catch (error) {
-            message.error('注册失败，请重试！');
+            message.error(error.message);
             console.error(error);
         }
     };
@@ -94,27 +103,54 @@ const LoginPage = () => {
                     </Button>,
                 ]}
             >
-                <Form id="registerForm" ref={registerFormRef} onFinish={onFinish}>
+                <Form id="registerForm" ref={registerFormRef} form={form} onFinish={onFinish}>
+                    {/* 昵称 */}
                     <Form.Item
                         name="nickname"
-                        rules={[{ required: true, message: '请输入昵称!' }]}
+                        label="昵称"
+                        hasFeedback
+                        rules={[
+                            { required: true, message: '请输入昵称!' },
+                            { min: 1, max: 8, message: '昵称长度必须在 1 到 8 个字符之间!' },
+                            { pattern: /^[a-zA-Z0-9]+$/, message: '昵称只能包含字母和数字!' },
+                        ]}
                     >
                         <Input placeholder="昵称" />
                     </Form.Item>
+
+                    {/* 密码 */}
                     <Form.Item
                         name="password"
-                        rules={[{ required: true, message: '请输入密码!' }]}
+                        label="密码"
+                        hasFeedback
+                        rules={[
+                            { required: true, message: '请输入密码!' },
+                            { min: 6, max: 12, message: '密码长度必须在 6 到 12 个字符之间!' },
+                            { pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,12}$/, message: '密码必须是字母和数字的组合!' },
+                        ]}
                     >
                         <Input.Password placeholder="密码" />
                     </Form.Item>
+
+                    {/* 确认密码 */}
                     <Form.Item
                         name="confirmPassword"
-                        rules={[{ required: true, message: '请再次输入密码!' }]}
+                        label="确认密码"
+                        dependencies={['password']} // 依赖于密码字段
+                        hasFeedback
+                        rules={[
+                            { required: true, message: '请再次输入密码!' },
+                            { validator: validateConfirmPassword }, // 自定义校验规则
+                        ]}
                     >
                         <Input.Password placeholder="确认密码" />
                     </Form.Item>
+
+                    {/* 头像 URL */}
                     <Form.Item
                         name="avatar"
+                        label="头像 URL"
+                        hasFeedback
                         rules={[
                             { required: true, message: '请输入图片 URL!' },
                             {
@@ -127,6 +163,8 @@ const LoginPage = () => {
                     >
                         <Input placeholder="图片 URL" />
                     </Form.Item>
+
+                    {/* 头像预览 */}
                     <Form.Item shouldUpdate>
                         {({ getFieldValue }) => {
                             const imageUrl = getFieldValue('avatar');
