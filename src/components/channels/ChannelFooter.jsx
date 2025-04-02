@@ -21,13 +21,13 @@ const ChannelFooter = () => {
     const handleExit = useRoomStore((state) => state.handleExit);
     const user = useUserStore((state) => state.user);
     const [isSpeaking, setIsSpeaking] = useState(false);
-    const {handleLogout} = useRoomStore();
+    const { handleLogout } = useRoomStore();
     const navigate = useNavigate();
 
 
-    const { roomId, localAudioStream, remoteAudioStream } = useSocketStore();
+    const { roomId, localAudioStream, remoteAudioStreams } = useSocketStore();
 
-    console.log(localAudioStream, remoteAudioStream)
+    console.log(localAudioStream, remoteAudioStreams)
 
     useEffect(() => {
         setIsSpeaking(false)
@@ -103,7 +103,16 @@ const ChannelFooter = () => {
         }}>
             {/* 音频元素 */}
             <audio ref={(ref) => ref && (ref.srcObject = localAudioStream)} autoPlay muted />
-            <audio ref={(ref) => ref && (ref.srcObject = remoteAudioStream)} autoPlay />
+            {Object.entries(remoteAudioStreams).map(([userId, stream]) => {
+                if (!stream) return null; // 如果音频流为空，跳过渲染
+                return (
+                    <audio
+                        key={userId}
+                        ref={(ref) => ref && (ref.srcObject = stream)}
+                        autoPlay
+                    />
+                );
+            })}
             {isInRoom && (
                 <Tooltip title="当前所在房间">
                     <div style={{

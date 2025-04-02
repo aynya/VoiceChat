@@ -34,7 +34,7 @@ const useSocketStore = create((set, get) => ({
   roomId: '',
   setRoomId: (roomId) => set({ roomId }),
   localAudioStream: null,
-  remoteAudioStream: null,
+  remoteAudioStreams: {},
   peersRef: {}, // 存储所有 PeerConnection
 
   // 设置消息
@@ -149,7 +149,12 @@ const useSocketStore = create((set, get) => ({
 
     // 处理远程流
     pc.ontrack = (e) => {
-      set({ remoteAudioStream: e.streams[0] });
+      set((state) => ({
+        remoteAudioStreams: {
+          ...state.remoteAudioStreams,
+          [targetId]: e.streams[0], // 将音频流与目标用户关联
+        },
+      }));
     };
 
     // 收集 ICE 候选
@@ -205,7 +210,11 @@ const useSocketStore = create((set, get) => ({
         delete peersRef[userId];
         set((state) => ({
           peersRef: { ...state.peersRef },
-          users: state.users.filter((user) => user.id !== userId)
+          users: state.users.filter((user) => user.id !== userId),
+          remoteAudioStreams: {
+            ...state.remoteAudioStreams,
+            [userId]: undefined, // 移除对应用户的音频流
+          },
         }));
       }
     });
