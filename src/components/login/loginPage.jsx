@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Button, Form, Input, Modal, Upload, message } from 'antd';
+import { Button, Form, Input, Modal, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import useLoginStore from '../../store/loginStore';
 import { login as loginService, register as registerService } from '../../services/loginService';

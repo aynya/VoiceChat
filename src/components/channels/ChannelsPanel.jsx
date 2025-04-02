@@ -6,12 +6,14 @@ import ChannelFooter from './ChannelFooter';
 import Right from '../rightMenu/Right';
 import useSocketStore from '../../store/socketStore';
 import useUserStore from '../../store/userStore';
+import useLoginStore from '../../store/loginStore';
 const { Sider } = Layout;
 
 
 const ChannelsPanel = () => {
     const { initLocalAudioStream, setupSocketListeners, myId } = useSocketStore();
     const { setUser } = useUserStore();
+    const { userInfo } = useLoginStore();
     useEffect(() => { // 初始化 本地音频流和 Socket 监听器
         console.log('App组件加载');
 
@@ -29,10 +31,10 @@ const ChannelsPanel = () => {
     useEffect(() => { // 设置用户信息
         setUser({
             id: myId,
-            username: Math.random().toString(36).substring(7),
-            avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${Math.random().toString(36).substring(7)}`,
+            username: userInfo.nickname,
+            avatar: userInfo.avatarUrl,
         })
-    }, [myId, setUser])
+    }, [myId, setUser, userInfo])
 
     return (
         <Layout hasSider style={{ height: '100vh' }}>

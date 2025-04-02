@@ -4,9 +4,14 @@ import io from 'socket.io-client';
 import useUserStore from './userStore';
 import { messageService } from '../services/messageService';
 
-const socket = io('http://localhost:3001', {
-  transports: ['websocket'],
-});
+let socket = null;
+
+const initializeSocket = () => {
+  if (!socket) {
+    socket = io('http://localhost:3001', { transports: ['websocket'] });
+  }
+  return socket;
+};
 
 const  formatDateTime = (isoString) => { // 格式化时间戳为 YYYY-MM-DD HH:mm:ss
   const date = new Date(isoString);
@@ -172,6 +177,7 @@ const useSocketStore = create((set, get) => ({
 
   // 监听 Socket 事件
   setupSocketListeners: () => {
+    initializeSocket();
     socket.on('myId', (id) => { set({ myId: id }); });
     // 用户加入房间后，接收房间中的用户列表
     socket.on('room-users', ({roomId, users}) => {
