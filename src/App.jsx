@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/login/loginPage';
 import ChannelsPanel from './components/channels/ChannelsPanel';
@@ -7,7 +7,17 @@ import './CSS/main.css';
 import useLoginStore from './store/loginStore';
 
 const App = () => {
-  const { isLoggedIn } = useLoginStore();
+  const { isLoggedIn, setLoggedIn } = useLoginStore();
+
+
+  useEffect(() => {
+    const loggedInUserJSON = window.localStorage.getItem('loggedInUser');
+    if (loggedInUserJSON) {
+      const user = JSON.parse(loggedInUserJSON);
+      setLoggedIn(user);
+    }
+  }, [])
+
 
   return (
     <Router>

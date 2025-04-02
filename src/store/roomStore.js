@@ -240,10 +240,10 @@ const useRoomStore = create((set) => ({
     },
 
     // 退出登录
-    handleLogout: () => {
+    handleLogout: async () => {
         const { handleLogout } = useLoginStore.getState();
         const {exitRoom} = useRoomStore.getState();
-        exitRoom() // 退出房间
+        await exitRoom() // 退出房间
         handleLogout(); // 退出登录
         message.success('退出登录成功');
     },

@@ -34,6 +34,7 @@ const ChannelsPanel = () => {
             username: userInfo.nickname,
             avatar: userInfo.avatarUrl,
         })
+        window.localStorage.setItem('loggedInUser', JSON.stringify(userInfo))
     }, [myId, setUser, userInfo])
 
     return (

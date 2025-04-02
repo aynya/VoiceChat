@@ -218,6 +218,7 @@ const useSocketStore = create((set, get) => ({
       socket.off('user-disconnected');
       socket.off('signal');
       socket.off('room-users');
+      socket = null;
     };
   },
 }));

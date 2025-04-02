@@ -70,8 +70,9 @@ const ChannelFooter = () => {
         }
     };
 
-    const onLogout = () => {
-        handleLogout();
+    const onLogout = async () => {
+        await handleLogout();
+        localStorage.removeItem('loggedInUser');
         navigate('/');
     }
 
