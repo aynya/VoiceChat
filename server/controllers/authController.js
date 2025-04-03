@@ -71,11 +71,23 @@ exports.login = async (req, res) => {
         const accessToken = generateAccessToken(payload);
         const refreshToken = generateRefreshToken(payload);
 
+        const jwtExpiryInSeconds = parseInt(config.jwtRefreshTokenExpiry);
+        const cookieMaxAge = jwtExpiryInSeconds * 1000; // 转换为毫秒
+
+        // 将 refreshToken 存储到 HttpOnly Cookie 中
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true, // 防止 JavaScript 访问
+            secure: process.env.NODE_ENV === 'production',   
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 防止 CSRF 攻击
+            domain: process.env.NODE_ENV === 'production' ? '.yourdomain.com' : 'localhost',
+            path: '/',      // Cookie 的作用域
+            maxAge: cookieMaxAge, // 设置过期时间
+        });
+
         res.json({
             success: true,
             user: { nickname: user.nickname, avatarUrl: user.avatar_url },
             accessToken,
-            refreshToken,
         });
     } catch (error) {
         console.error(error);
@@ -84,14 +96,15 @@ exports.login = async (req, res) => {
 };
 
 exports.refreshToken = async (req, res) => {
-    const { refreshToken } = req.body;
+    const refreshTokenFromCookie = req.cookies.refreshToken;
 
-    if (!refreshToken) {
+    if (!refreshTokenFromCookie) {
+        console.log('刷新令牌缺失')
         return res.status(400).json({ error: '刷新令牌缺失！' });
     }
 
     try {
-        const decoded = verifyRefreshToken(refreshToken);
+        const decoded = verifyRefreshToken(refreshTokenFromCookie);
         if (!decoded) {
             return res.status(401).json({ error: '无效的刷新令牌！' });
         }

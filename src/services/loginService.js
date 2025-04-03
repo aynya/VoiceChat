@@ -8,13 +8,15 @@ export const login = async (nickname, password) => {
     const response = await axios.post(`${baseUrl}/api/login`, {
       nickname,
       password,
-    });
+    }, {
+      withCredentials: true, // 确保接收并存储 Cookie
+  });
 
-    const { accessToken, refreshToken, user } = response.data;
+    const { accessToken, user } = response.data;
 
     // 存储令牌到本地存储
     localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+    // localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('loggedInUser', JSON.stringify(user));
 
     return response.data; // 返回后端响应的数据（包括 token 和用户信息）

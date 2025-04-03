@@ -34,13 +34,13 @@ apiClient.interceptors.response.use(
 
             try {
                 console.log('刷新令牌请求');
-                const refreshToken = localStorage.getItem('refreshToken');
-                if (!refreshToken) {
-                    throw new Error('No refresh token found');
-                }
+                // const refreshToken = localStorage.getItem('refreshToken');
+                // if (!refreshToken) {
+                //     throw new Error('No refresh token found');
+                // }
 
-                const refreshResponse = await axios.post(`${baseUrl}/refresh`, {
-                    refreshToken,
+                const refreshResponse = await axios.post(`${baseUrl}/refresh`, {}, {
+                    withCredentials: true, // 确保发送 Cookie
                 });
 
                 const { accessToken } = refreshResponse.data;
@@ -58,7 +58,7 @@ apiClient.interceptors.response.use(
                 message.error('登录已过期，请重新登录');
                 // 清除所有令牌并重定向到登录页面
                 localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
+                // localStorage.removeItem('refreshToken');
                 localStorage.removeItem('loggedInUser');
                 window.location.href = '/'; // 根据实际情况调整重定向路径
             }

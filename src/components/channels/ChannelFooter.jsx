@@ -73,7 +73,7 @@ const ChannelFooter = () => {
     const onLogout = async () => {
         await handleLogout();
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        // localStorage.removeItem('refreshToken');
         localStorage.removeItem('loggedInUser');
         navigate('/');
     }

@@ -11,12 +11,14 @@ const roomRoutes = require('./routes/roomRoutes');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const authMiddleware = require('./middleware/authMiddleware');
+const cookieParser = require('cookie-parser');
 
 const server = http.createServer(app);
 
 // 使用无限制的 CORS 配置
 app.use(corsMiddleware);
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/api', authRoutes);
 
