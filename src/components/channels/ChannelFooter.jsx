@@ -188,6 +188,11 @@ const ChannelFooter = () => {
                     menu={{
                         items: [
                             {
+                                key: 'username',
+                                label: <span style={{ color: '#1890ff', fontWeight: 'bold' }}>{user?.username}</span>,
+                                disabled: true,
+                              },
+                            {
                                 key: 'logout',
                                 label: <span style={{ color: '#ff4d4f' }}>退出登录</span>,
                                 onClick: onLogout

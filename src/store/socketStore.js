@@ -211,10 +211,9 @@ const useSocketStore = create((set, get) => ({
         set((state) => ({
           peersRef: { ...state.peersRef },
           users: state.users.filter((user) => user.id !== userId),
-          remoteAudioStreams: {
-            ...state.remoteAudioStreams,
-            [userId]: undefined, // 移除对应用户的音频流
-          },
+          remoteAudioStreams: Object.fromEntries(
+            Object.entries(state.remoteAudioStreams).filter(([id]) => id !== userId)
+          ),
         }));
       }
     });
