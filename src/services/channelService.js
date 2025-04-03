@@ -44,7 +44,9 @@ export const channelService = {
     // 加入频道
     joinChannel: async (roomId, user) => {
         try {
-            await apiClient.post(`${baseUrl}/rooms/${roomId}/users`, user);
+            await apiClient.post(`${baseUrl}/rooms/${roomId}/users`, user, {
+                withCredentials: true, // 确保接收并存储 Cookie
+            });
             console.log("加入频道", roomId, user);
             return true;
         } catch (error) {
