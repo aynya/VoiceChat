@@ -10,6 +10,7 @@ const authRoutes = require('./routes/authRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const authMiddleware = require('./middleware/authMiddleware');
 
 const server = http.createServer(app);
 
@@ -18,9 +19,11 @@ app.use(corsMiddleware);
 app.use(express.json());
 
 app.use('/api', authRoutes);
-app.use('/api/rooms', roomRoutes);
-app.use('/api/rooms', userRoutes);
-app.use('/api/rooms', messageRoutes);
+
+// 收保护路由
+app.use('/api/rooms', authMiddleware, roomRoutes);
+app.use('/api/rooms', authMiddleware, userRoutes);
+app.use('/api/rooms', authMiddleware, messageRoutes);
 
 let usersMap = new Map();
 

@@ -11,8 +11,9 @@ const App = () => {
 
 
   useEffect(() => {
+    const accessToken = window.localStorage.getItem('accessToken');
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser');
-    if (loggedInUserJSON) {
+    if (accessToken && loggedInUserJSON) {
       const user = JSON.parse(loggedInUserJSON);
       setLoggedIn(user);
     }

@@ -1,14 +1,11 @@
-// TODO: 需要与后端API集成
-// 目前使用模拟数据，后续需要替换为实际的API调用
+import apiClient from './apiClient';
 
-import axios from 'axios';
-
-const baseUrl = 'http://localhost:3001/api'
+const baseUrl = 'http://localhost:3001/api';
 
 export const messageService = {
     // 获取频道消息历史
     getChannelMessages: async (roomId) => {
-        const response = await axios.get(`${baseUrl}/rooms/${roomId}/messages`)  
+        const response = await apiClient.get(`${baseUrl}/rooms/${roomId}/messages`);
         return response.data;
     },
 
@@ -21,15 +18,13 @@ export const messageService = {
             avatar: user.avatar,
             content: message.content,
             timestamp: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`,
-        }
-        const response = await axios.post(`${baseUrl}/rooms/${channelId}/messages`, newMessage)
-
-        return response.data
+        };
+        const response = await apiClient.post(`${baseUrl}/rooms/${channelId}/messages`, newMessage);
+        return response.data;
     },
 
     // 订阅频道消息更新
     subscribeToChannel: (channelId, callback) => {
-        // TODO: 替换为实际的WebSocket连接
         // 示例：const ws = new WebSocket(`ws://your-api/ws/channels/${channelId}`);
         // ws.onmessage = (event) => callback(JSON.parse(event.data));
 
@@ -51,4 +46,4 @@ export const messageService = {
         // 返回取消订阅的函数
         return () => clearInterval(interval);
     }
-}; 
+};

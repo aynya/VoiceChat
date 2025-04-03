@@ -15,8 +15,7 @@ const LoginPage = () => {
 
     const handleLogin = async () => {
         try {
-            const { token, user } = await loginService(username, password);
-            localStorage.setItem('token', token); // 存储 token
+            const { user } = await loginService(username, password);
             setLoggedIn(user); // 更新登录状态
             message.success('登录成功！');
         } catch (error) {
