@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const baseUrl = 'http://localhost:3001'
+const baseUrl = 'http://43.139.233.108:3001'
 
 export const login = async (nickname, password) => {
   try {

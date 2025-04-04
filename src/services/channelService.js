@@ -2,7 +2,7 @@ import apiClient from './apiClient';
 import { nanoid } from 'nanoid';
 import { message } from 'antd';
 
-const baseUrl = 'http://localhost:3001/api';
+const baseUrl = 'http://43.139.233.108:3001/api';
 
 export const channelService = {
     // 获取文字频道列表

@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { message } from 'antd';
 
-const baseUrl = 'http://localhost:3001/api'
+const baseUrl = 'http://43.139.233.108:3001/api'
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:3001/api',
+    baseURL: 'http://43.139.233.108:3001/api',
     headers: {
         'Content-Type': 'application/json',
     },

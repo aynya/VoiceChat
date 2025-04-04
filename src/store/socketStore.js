@@ -8,7 +8,7 @@ let socket = null;
 
 const initializeSocket = () => {
   if (!socket) {
-    socket = io('http://localhost:3001', { transports: ['websocket'] });
+    socket = io('http://43.139.233.108:3001', { transports: ['websocket'] });
   }
   return socket;
 };

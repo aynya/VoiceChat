@@ -1,6 +1,6 @@
 import apiClient from './apiClient';
 
-const baseUrl = 'http://localhost:3001/api';
+const baseUrl = 'http://43.139.233.108:3001/api';
 
 export const messageService = {
     // 获取频道消息历史
