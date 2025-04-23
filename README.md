@@ -1,12 +1,8 @@
-# React + Vite
+技术栈：JavaScript + React + Zustand + Node.js + MySQL + Socket.IO + WebRTC
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+技术亮点：
+- 使用Zustand管理用户状态，响应式状态更新，提供流畅的用户交互体验
+- 实现WebRTC点对点音频传输，通过ICE候选协商和STUN服务器实现NAT穿透
+- 使用动态PeerConnection管理机制，根据用户加入离开自动创建和销毁连接，确保资源高效利用
+- 实现Socket.IO事件驱动架构，支持房间管理、消息广播和用户状态同步、构建实时响应的用户体验
+- 使用JWT鉴权 & HttpOnly Cookie 实现双Token认证机制，结合axios拦截器实现自动刷新，检测活跃实现滑动刷新
